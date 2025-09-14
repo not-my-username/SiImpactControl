@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://cvgu8px0jpxnn"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_hurp0"]
+[ext_resource type="StyleBox" uid="uid://drpfuhk8y61xk" path="res://assets/styles/SolidPanelPopup.tres" id="2_ppuex"]
+[ext_resource type="Script" uid="uid://b0etbx3fxqlru" path="res://components/ConnectProgressBar/ConnectProgressBar.gd" id="3_mrs4b"]
+[ext_resource type="Texture2D" uid="uid://dqtxxi8nvw8lo" path="res://assets/icons/Connect.svg" id="4_h7ijm"]
+
+[node name="ConnectProgressBar" type="PanelContainer" node_paths=PackedStringArray("status_label")]
+custom_minimum_size = Vector2(300, 0)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("1_hurp0")
+theme_override_styles/panel = ExtResource("2_ppuex")
+script = ExtResource("3_mrs4b")
+status_label = NodePath("VBoxContainer/ProgressBar/StatusLabel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Connecting to Device..."
+icon = ExtResource("4_h7ijm")
+flat = true
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+indeterminate = true
+editor_preview_indeterminate = true
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer/ProgressBar"]
+modulate = Color(0.336608, 0.336608, 0.336608, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Awaiting Session Responce"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cancel" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[connection signal="pressed" from="VBoxContainer/Cancel" to="." method="_on_cancel_pressed"]

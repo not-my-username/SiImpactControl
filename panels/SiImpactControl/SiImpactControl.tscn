@@ -1,0 +1,518 @@
+[gd_scene load_steps=36 format=3 uid="uid://c51tujhwllw0p"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_scfol"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_280mo"]
+[ext_resource type="Script" uid="uid://ctuka0l27qon7" path="res://panels/SiImpactControl/SiImpactControl.gd" id="2_u0loj"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_b51j4"]
+[ext_resource type="Texture2D" uid="uid://bydo5aiqidyv0" path="res://assets/icons/SplitscreenLeft.svg" id="5_xief2"]
+[ext_resource type="Texture2D" uid="uid://cpsdsa0j8ujc6" path="res://assets/icons/SplitscreenBottom.svg" id="6_utivi"]
+[ext_resource type="Texture2D" uid="uid://cgy7bill7a4he" path="res://assets/icons/SplitscreenTop.svg" id="7_1clmd"]
+[ext_resource type="Texture2D" uid="uid://cuoiwy211efkj" path="res://assets/icons/SplitscreenRight.svg" id="7_fe8yk"]
+[ext_resource type="Texture2D" uid="uid://xivna0a6htie" path="res://assets/icons/ChevronRight.svg" id="8_b51j4"]
+[ext_resource type="Script" uid="uid://btj255g3n10s5" path="res://Settings.gd" id="8_bhe6j"]
+[ext_resource type="PackedScene" uid="uid://c6w0n40y16pob" path="res://components/Channel/Channel.tscn" id="9_xief2"]
+[ext_resource type="Script" uid="uid://k4i8a50go72o" path="res://panels/SiImpactControl/Cues.gd" id="10_8m63c"]
+[ext_resource type="Texture2D" uid="uid://cgc47wmucmcbb" path="res://assets/icons/Delete.svg" id="10_k0jyk"]
+[ext_resource type="Texture2D" uid="uid://wtt3cjeen16b" path="res://assets/icons/Compress.svg" id="10_vnulu"]
+[ext_resource type="Texture2D" uid="uid://c0ti1wug632qy" path="res://assets/icons/Download.svg" id="11_8m63c"]
+[ext_resource type="FontFile" uid="uid://cs88pnpm7j2x4" path="res://assets/fonts/RubikMonoOne-Regular.ttf" id="11_bhe6j"]
+[ext_resource type="Texture2D" uid="uid://cuum42i0s3gup" path="res://assets/icons/ArrowUpwards.svg" id="12_bhe6j"]
+[ext_resource type="Texture2D" uid="uid://bt18yd73u1p41" path="res://assets/icons/Update.svg" id="13_0qs76"]
+[ext_resource type="Texture2D" uid="uid://dpr41g5b8g22c" path="res://assets/icons/ArrowDownwards.svg" id="13_hq16r"]
+[ext_resource type="Script" uid="uid://ddal5hsdvk0j7" path="res://classes/OSCServer.gd" id="16_fbe4j"]
+[ext_resource type="Script" uid="uid://c8rf6174uebfi" path="res://classes/OSCClient.gd" id="17_be4pb"]
+[ext_resource type="PackedScene" uid="uid://cg4b0ujwg563n" path="res://components/AutoCreateCuesDialog/AutoCreateCuesDialog.tscn" id="18_qwjdt"]
+[ext_resource type="Texture2D" uid="uid://bepakeqty6ayt" path="res://assets/icons/Red.svg" id="19_0sq05"]
+[ext_resource type="Texture2D" uid="uid://4mqipjllsaa" path="res://assets/icons/Orange.svg" id="20_u7s1s"]
+[ext_resource type="Texture2D" uid="uid://cmu5iamok7805" path="res://assets/icons/Yellow.svg" id="21_vprpp"]
+[ext_resource type="Texture2D" uid="uid://cei5iv5gsjcgp" path="res://assets/icons/Green.svg" id="22_1clmd"]
+[ext_resource type="Texture2D" uid="uid://h47g4j2pg8vj" path="res://assets/icons/Cyan.svg" id="23_np4vu"]
+[ext_resource type="Texture2D" uid="uid://dwxfrhdcpfyx8" path="res://assets/icons/Blue.svg" id="24_wtegm"]
+[ext_resource type="Texture2D" uid="uid://bgidd8k83p8tl" path="res://assets/icons/Purple.svg" id="25_w6rkp"]
+[ext_resource type="Texture2D" uid="uid://boqnt4x8xsfj8" path="res://assets/icons/Magenta.svg" id="26_o6tug"]
+[ext_resource type="Texture2D" uid="uid://b0goccev44hcp" path="res://assets/icons/Gray.svg" id="27_u7s1s"]
+[ext_resource type="Texture2D" uid="uid://brw4wk3ooat6p" path="res://assets/icons/DarkGray.svg" id="28_vprpp"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_280mo"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_be4pb"]
+font = ExtResource("11_bhe6j")
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_8m63c"]
+font = ExtResource("11_bhe6j")
+font_size = 20
+font_color = Color(0.691357, 0.691357, 0.691357, 1)
+
+[node name="SiImpactControl" type="PanelContainer" node_paths=PackedStringArray("mono_channels", "st_channels", "mix_channels", "mtx_channels", "vca_channels", "user1_channels", "user2_channels", "user3_channels", "user4_channels", "main_lr", "main_c", "panels")]
+custom_minimum_size = Vector2(500, 300)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_scfol")
+theme_override_styles/panel = ExtResource("2_280mo")
+script = ExtResource("2_u0loj")
+mono_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/CH")
+st_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/ST")
+mix_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/MIX")
+mtx_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/MTX")
+vca_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/VCA")
+user1_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/User1")
+user2_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/User2")
+user3_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/User3")
+user4_channels = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/User4")
+main_lr = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer/MasterContainer/LR")
+main_c = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer/MasterContainer/C")
+panels = [NodePath("VBoxContainer/HSplitContainer/RightPanel/Cues"), NodePath("VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel/Settings")]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("4_b51j4")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Si Impact Control"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="ToggleLeft" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("5_xief2")
+
+[node name="ToggleBottom" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("6_utivi")
+
+[node name="ToggleTop" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("7_1clmd")
+
+[node name="ToggleRight" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("7_fe8yk")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 362
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = -262
+
+[node name="LeftPanel" type="TabContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+current_tab = 0
+drag_to_rearrange_enabled = true
+
+[node name="Settings" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel" node_paths=PackedStringArray("_tab_container", "_file_dialog", "panels")]
+layout_mode = 2
+script = ExtResource("8_bhe6j")
+_tab_container = NodePath("TabContainer")
+_file_dialog = NodePath("FileDialog")
+panels = [NodePath("."), NodePath("../../../RightPanel/Cues")]
+metadata/_tab_index = 0
+
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel/Settings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FileDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel/Settings"]
+access = 2
+use_native_dialog = true
+
+[node name="Midi" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TopPanel" type="TabContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+drag_to_rearrange_enabled = true
+
+[node name="Input" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Equalization" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Dynamics" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="BottomPanel" type="TabContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+drag_to_rearrange_enabled = true
+
+[node name="Mixer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer"]
+layout_mode = 2
+
+[node name="CH1-64" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(80, 27.365)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_280mo")
+text = "CH1-64"
+
+[node name="ST1-8" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(80, 27.365)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_280mo")
+text = "ST1-8"
+
+[node name="MIX1-14" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(80, 27.365)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_280mo")
+text = "MIX1-14"
+
+[node name="MTX1-4" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(80, 27.365)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_280mo")
+text = "MTX1-4"
+
+[node name="VCAs" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(80, 27.365)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_280mo")
+text = "VCAs"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Compress" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("10_vnulu")
+icon_alignment = 1
+
+[node name="Channels" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="CH" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ST" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MIX" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MTX" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VCA" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="User1" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="User2" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="User3" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="User4" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2"]
+layout_mode = 2
+
+[node name="HideMasters" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("8_b51j4")
+
+[node name="MasterContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="LR" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer/MasterContainer" instance=ExtResource("9_xief2")]
+layout_mode = 2
+show_gate = false
+channel_name = "Main LR"
+st = true
+
+[node name="C" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer/MasterContainer" instance=ExtResource("9_xief2")]
+layout_mode = 2
+show_gate = false
+channel_name = "Main C"
+
+[node name="RightPanel" type="TabContainer" parent="VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+current_tab = 0
+drag_to_rearrange_enabled = true
+
+[node name="Cues" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/RightPanel" node_paths=PackedStringArray("_cue_container", "_cue_scroll_container", "_current_cue_name", "_no_active_cue_label", "_update_confirmation_dialog", "_delete_confirmation_dialog", "_reorder_confirmation_dialog", "_color_popup_menu", "_store_mode_dialog", "_auto_create_cues_dialog", "_auto_scroll_timer", "_qlab_keep_alive_timer", "_disable_on_cue_deselection", "_osc_server", "_osc_client")]
+layout_mode = 2
+script = ExtResource("10_8m63c")
+_cue_container = NodePath("ScrollContainer/CueContainer")
+_cue_scroll_container = NodePath("ScrollContainer")
+_current_cue_name = NodePath("PanelContainer2/HBoxContainer/CurrentCueName")
+_no_active_cue_label = NodePath("PanelContainer2/HBoxContainer/NoActiveCue")
+_update_confirmation_dialog = NodePath("UpdateConfirmationDialog")
+_delete_confirmation_dialog = NodePath("DeleteConfirmationDialog")
+_reorder_confirmation_dialog = NodePath("CueReOrderConfirmation")
+_color_popup_menu = NodePath("ColorPopupMenu")
+_store_mode_dialog = NodePath("StoreModeDialog")
+_auto_create_cues_dialog = NodePath("AutoCreateCuesDialog")
+_auto_scroll_timer = NodePath("AutoScrollTimer")
+_qlab_keep_alive_timer = NodePath("QLabKeepAliveTimer")
+_disable_on_cue_deselection = [NodePath("PanelContainer2/HBoxContainer/Update"), NodePath("PanelContainer2/HBoxContainer/Delete")]
+_osc_server = NodePath("OSCServer")
+_osc_client = NodePath("OSCClient")
+metadata/_tab_index = 0
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2"]
+layout_mode = 2
+
+[node name="CurrentCueName" type="Label" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Active Cue"
+label_settings = SubResource("LabelSettings_be4pb")
+text_overrun_behavior = 3
+
+[node name="NoActiveCue" type="Label" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "No Active Cue"
+label_settings = SubResource("LabelSettings_8m63c")
+text_overrun_behavior = 3
+
+[node name="Update" type="Button" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+disabled = true
+icon = ExtResource("13_0qs76")
+
+[node name="Delete" type="Button" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+disabled = true
+icon = ExtResource("10_k0jyk")
+
+[node name="StoreCue" type="Button" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("11_8m63c")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CueContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer"]
+layout_mode = 2
+
+[node name="GO" type="Button" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "GO"
+
+[node name="Up" type="Button" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("12_bhe6j")
+
+[node name="Down" type="Button" parent="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("13_hq16r")
+
+[node name="DeleteConfirmationDialog" type="ConfirmationDialog" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+initial_position = 5
+force_native = true
+ok_button_text = "Delete"
+dialog_text = "Delete Cue: n?"
+
+[node name="UpdateConfirmationDialog" type="ConfirmationDialog" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+auto_translate_mode = 1
+initial_position = 5
+force_native = true
+ok_button_text = "Update"
+dialog_text = "Update Cue: n?"
+
+[node name="CueReOrderConfirmation" type="ConfirmationDialog" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+initial_position = 5
+size = Vector2i(323, 164)
+ok_button_text = "Re-Order"
+dialog_autowrap = true
+
+[node name="StoreModeDialog" type="AcceptDialog" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+title = "Waiting on Mixer..."
+initial_position = 5
+size = Vector2i(395, 100)
+force_native = true
+ok_button_text = "Cancel"
+dialog_text = "Storing Cue... Waiting on mixer to return values"
+
+[node name="AutoCreateCuesDialog" parent="VBoxContainer/HSplitContainer/RightPanel/Cues" instance=ExtResource("18_qwjdt")]
+visible = false
+
+[node name="ColorPopupMenu" type="PopupMenu" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+auto_translate_mode = 1
+size = Vector2i(120, 278)
+prefer_native_menu = true
+item_count = 12
+item_0/text = "Set Color"
+item_0/id = 100
+item_0/separator = true
+item_1/text = "Red"
+item_1/icon = ExtResource("19_0sq05")
+item_1/id = 0
+item_2/text = "Orange"
+item_2/icon = ExtResource("20_u7s1s")
+item_2/id = 1
+item_3/text = "Yellow"
+item_3/icon = ExtResource("21_vprpp")
+item_3/id = 2
+item_4/text = "Green"
+item_4/icon = ExtResource("22_1clmd")
+item_4/id = 3
+item_5/text = "Cyan"
+item_5/icon = ExtResource("23_np4vu")
+item_5/id = 4
+item_6/text = "Blue"
+item_6/icon = ExtResource("24_wtegm")
+item_6/id = 5
+item_7/text = "Purple"
+item_7/icon = ExtResource("25_w6rkp")
+item_7/id = 6
+item_8/text = "Magenta"
+item_8/icon = ExtResource("26_o6tug")
+item_8/id = 7
+item_9/text = "Gray"
+item_9/icon = ExtResource("27_u7s1s")
+item_9/id = 8
+item_10/text = "Dark Gray"
+item_10/icon = ExtResource("28_vprpp")
+item_10/id = 9
+item_11/text = "Reset"
+item_11/id = 10
+
+[node name="AutoScrollTimer" type="Timer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+one_shot = true
+
+[node name="QLabKeepAliveTimer" type="Timer" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+wait_time = 50.0
+
+[node name="OSCServer" type="Node" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+script = ExtResource("16_fbe4j")
+port = 53001
+auto_listen = false
+
+[node name="OSCClient" type="Node" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]
+script = ExtResource("17_be4pb")
+port = 53000
+auto_connect = false
+
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ToggleLeft" to="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ToggleBottom" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ToggleTop" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ToggleRight" to="VBoxContainer/HSplitContainer/RightPanel" method="set_visible"]
+[connection signal="file_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel/Settings/FileDialog" to="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel/Settings" method="_on_file_dialog_file_selected"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/CH1-64" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/CH" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/ST1-8" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/ST" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/MIX1-14" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/MIX" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/MTX1-4" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/MTX" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/VCAs" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/VCA" method="set_visible"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/Compress" to="." method="_on_compress_toggled"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer/HideMasters" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer2/HBoxContainer/MasterContainer" method="set_visible"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer/Update" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_update_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer/Delete" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_delete_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer2/HBoxContainer/StoreCue" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_store_cue_pressed"]
+[connection signal="gui_input" from="VBoxContainer/HSplitContainer/RightPanel/Cues/ScrollContainer/CueContainer" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_cue_container_gui_input"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer/HBoxContainer/GO" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_go_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer/HBoxContainer/Up" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_selection_up"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/PanelContainer/HBoxContainer/Down" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_selection_down"]
+[connection signal="confirmed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/StoreModeDialog" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_store_mode_dialog_confirmed"]
+[connection signal="confirmed" from="VBoxContainer/HSplitContainer/RightPanel/Cues/AutoCreateCuesDialog" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="auto_create_cues"]
+[connection signal="timeout" from="VBoxContainer/HSplitContainer/RightPanel/Cues/QLabKeepAliveTimer" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_q_lab_keep_alive_timer_timeout"]
+[connection signal="message_received" from="VBoxContainer/HSplitContainer/RightPanel/Cues/OSCServer" to="VBoxContainer/HSplitContainer/RightPanel/Cues" method="_on_osc_server_message_received"]

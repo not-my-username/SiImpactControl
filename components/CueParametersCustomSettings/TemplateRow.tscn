@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://but06ehjblhrv"]
+
+[ext_resource type="Script" uid="uid://bqcbw4vf2ra2q" path="res://components/CueParametersCustomSettings/TemplateRow.gd" id="1_fltri"]
+[ext_resource type="Script" uid="uid://cgjbvxk3xxos1" path="res://components/VDInput/VDInput.gd" id="2_ijlch"]
+[ext_resource type="Texture2D" uid="uid://cgc47wmucmcbb" path="res://assets/icons/Delete.svg" id="3_v6fas"]
+
+[node name="TemplateRow" type="PanelContainer" node_paths=PackedStringArray("vd_input", "pid_from", "pid_to", "delete")]
+script = ExtResource("1_fltri")
+vd_input = NodePath("HBoxContainer/VDInput")
+pid_from = NodePath("HBoxContainer/PIDFrom")
+pid_to = NodePath("HBoxContainer/PIDTo")
+delete = NodePath("HBoxContainer/Delete")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Device:"
+
+[node name="VDInput" type="LineEdit" parent="HBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_ijlch")
+
+[node name="Label2" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "PID From:"
+
+[node name="PIDFrom" type="SpinBox" parent="HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 65535.0
+value = 1.0
+
+[node name="Label3" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "PID To:"
+
+[node name="PIDTo" type="SpinBox" parent="HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 65535.0
+value = 1.0
+
+[node name="Delete" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_v6fas")

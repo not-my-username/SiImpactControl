@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://pbftti5h68xw"]
+
+[ext_resource type="Script" uid="uid://djqsc4sgteouu" path="res://modules/SiImpactControl/components/CueParametersCustomSettings/CueParametersCustomSettings.gd" id="1_ybkkj"]
+[ext_resource type="Texture2D" uid="uid://hev78r0wps42" path="res://assets/icons/Add.svg" id="2_wdkvq"]
+
+[node name="CueParametersCustomSettings" type="PanelContainer" node_paths=PackedStringArray("_row_container")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ybkkj")
+_row_container = NodePath("VBoxContainer/VBoxContainer")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="AddRow" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("2_wdkvq")
+icon_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/AddRow" to="." method="_on_add_row_pressed"]

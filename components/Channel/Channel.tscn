@@ -1,0 +1,321 @@
+[gd_scene load_steps=11 format=3 uid="uid://c6w0n40y16pob"]
+
+[ext_resource type="StyleBox" uid="uid://bxwylw4uk8cyk" path="res://assets/styles/ClassSettingsBG.tres" id="1_4bpmi"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_rm4yr"]
+[ext_resource type="Script" uid="uid://rk51egqn7yy4" path="res://components/Channel/Channel.gd" id="2_1adkk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1adkk"]
+content_margin_left = 8.0
+content_margin_top = 7.0
+content_margin_right = 8.0
+content_margin_bottom = 7.0
+bg_color = Color(0.258824, 0.858824, 0.258824, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.341176, 0.341176, 0.341176, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iouno"]
+content_margin_left = 8.0
+content_margin_top = 7.0
+content_margin_right = 8.0
+content_margin_bottom = 7.0
+bg_color = Color(1, 0.301961, 0.301961, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.341176, 0.341176, 0.341176, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_0y44k"]
+font_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c4yw1"]
+bg_color = Color(0.3, 1, 0.3, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1adkk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0y44k"]
+bg_color = Color(1, 1, 1, 1)
+draw_center = false
+border_width_top = 5
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ulvr6"]
+bg_color = Color(1, 0.3, 0.3, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Channel" type="PanelContainer" node_paths=PackedStringArray("fader", "fader_db_label", "vu_meter_left", "vu_meter_right", "rms_meter_left", "rms_meter_right", "comp_meter", "status_container", "metering_container", "gate_open", "gate_hold", "gate_shut", "name_button", "mute_button")]
+custom_minimum_size = Vector2(124, 0)
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 100.0
+offset_bottom = -2.0
+grow_vertical = 2
+theme = ExtResource("1_rm4yr")
+theme_override_styles/panel = ExtResource("1_4bpmi")
+script = ExtResource("2_1adkk")
+fader = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/Fader")
+fader_db_label = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/FaderDBLabel")
+vu_meter_left = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer/VUMeterL")
+vu_meter_right = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer/VUMeterR")
+rms_meter_left = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer/VUMeterL/RMS")
+rms_meter_right = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer/VUMeterR/RMS")
+comp_meter = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/Comp/HBoxContainer/Comp")
+status_container = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/Status")
+metering_container = NodePath("VBoxContainer/HBoxContainer/MeteringContainer")
+gate_open = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer/Open")
+gate_hold = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer2/Hold")
+gate_shut = NodePath("VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer3/Close")
+name_button = NodePath("VBoxContainer/PanelContainer/Select")
+mute_button = NodePath("VBoxContainer/HBoxContainer2/Mute")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="Mute" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_1adkk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iouno")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1adkk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_iouno")
+toggle_mode = true
+text = "Mute"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="FaderDBLabel" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "0dB"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="Fader" type="VSlider" parent="VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
+max_value = 1.3
+step = 0.001
+value = 1.0
+tick_count = 12
+ticks_on_borders = true
+
+[node name="MeteringContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VU" type="PanelContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer"]
+layout_mode = 2
+
+[node name="VUMeterL" type="ProgressBar" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(15.73, 0)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/fill = SubResource("StyleBoxFlat_c4yw1")
+max_value = 1.0
+step = 0.001
+value = 1.0
+fill_mode = 3
+show_percentage = false
+
+[node name="RMS" type="ProgressBar" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer/VUMeterL"]
+custom_minimum_size = Vector2(15.73, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.27
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxEmpty_1adkk")
+theme_override_styles/fill = SubResource("StyleBoxFlat_0y44k")
+max_value = 1.0
+step = 0.001
+value = 1.0
+fill_mode = 3
+show_percentage = false
+
+[node name="VUMeterR" type="ProgressBar" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(15.73, 0)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/fill = SubResource("StyleBoxFlat_c4yw1")
+max_value = 1.0
+step = 0.001
+value = 1.0
+fill_mode = 3
+show_percentage = false
+
+[node name="RMS" type="ProgressBar" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/HBoxContainer/VUMeterR"]
+custom_minimum_size = Vector2(15.73, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.27
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxEmpty_1adkk")
+theme_override_styles/fill = SubResource("StyleBoxFlat_0y44k")
+max_value = 1.0
+step = 0.001
+value = 1.0
+fill_mode = 3
+show_percentage = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "0dB"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/MeteringContainer/VU/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+text = "-INF"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="Comp" type="PanelContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/Comp"]
+layout_mode = 2
+
+[node name="Comp" type="ProgressBar" parent="VBoxContainer/HBoxContainer/MeteringContainer/Comp/HBoxContainer"]
+custom_minimum_size = Vector2(15.73, 0)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/fill = SubResource("StyleBoxFlat_ulvr6")
+max_value = 1.0
+value = 1.0
+fill_mode = 2
+show_percentage = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/Comp/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/MeteringContainer/Comp/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "0dB"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/MeteringContainer/Comp/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+text = "15"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="Status" type="PanelContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Open" type="ColorRect" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+color = Color(0.0962047, 0.0962048, 0.0962047, 1)
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 10
+text = "O"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Hold" type="ColorRect" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+color = Color(0.0962047, 0.0962048, 0.0962047, 1)
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 10
+text = "H"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Close" type="ColorRect" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+color = Color(0.0962047, 0.0962048, 0.0962047, 1)
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/MeteringContainer/Status/HBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 10
+text = "C"
+label_settings = SubResource("LabelSettings_0y44k")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Select" type="Button" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Channel Name"
+flat = true
+text_overrun_behavior = 3
+
+[connection signal="toggled" from="VBoxContainer/HBoxContainer2/Mute" to="." method="_on_mute_toggled"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/VBoxContainer2/Fader" to="." method="_on_fader_value_changed"]

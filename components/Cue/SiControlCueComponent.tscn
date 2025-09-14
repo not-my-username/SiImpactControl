@@ -1,0 +1,127 @@
+[gd_scene load_steps=8 format=3 uid="uid://ddvhgnsrenua6"]
+
+[ext_resource type="Script" uid="uid://dwkgwlauraagh" path="res://modules/SiImpactControl/components/Cue/SiControlCueComponent.gd" id="1_7bw0m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7bw0m"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.254902, 0.254902, 0.254902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3xu2w"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0627451, 0.0627451, 0.0627451, 0.192157)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7bw0m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ui1qp"]
+content_margin_left = 5.0
+content_margin_right = 4.0
+draw_center = false
+border_color = Color(0.27451, 0.27451, 0.27451, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bbxhc"]
+content_margin_left = 5.0
+draw_center = false
+border_color = Color(0.341176, 0.341176, 0.341176, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uuhpe"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0627451, 0.0627451, 0.0627451, 0.192157)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="SiControlCueComponent" type="PanelContainer"]
+offset_right = 166.0
+offset_bottom = 57.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_7bw0m")
+script = ExtResource("1_7bw0m")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Number" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_3xu2w")
+
+[node name="NumberEdit" type="LineEdit" parent="HBoxContainer/Number"]
+visible = false
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7bw0m")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_ui1qp")
+theme_override_styles/normal = SubResource("StyleBoxFlat_bbxhc")
+text = "Cue Name"
+placeholder_text = "Cue Name"
+expand_to_text_length = true
+select_all_on_focus = true
+caret_blink = true
+
+[node name="CueNumber" type="Label" parent="HBoxContainer/Number"]
+layout_mode = 2
+mouse_filter = 0
+text = "82"
+
+[node name="Name" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_uuhpe")
+
+[node name="NameEdit" type="LineEdit" parent="HBoxContainer/Name"]
+visible = false
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7bw0m")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_ui1qp")
+theme_override_styles/normal = SubResource("StyleBoxFlat_bbxhc")
+text = "Cue Name"
+placeholder_text = "Cue Name"
+expand_to_text_length = true
+select_all_on_focus = true
+caret_blink = true
+
+[node name="CueName" type="Label" parent="HBoxContainer/Name"]
+layout_mode = 2
+mouse_filter = 1
+text = "Cue Name"
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="focus_exited" from="HBoxContainer/Number/NumberEdit" to="." method="_on_number_edit_focus_exited"]
+[connection signal="text_submitted" from="HBoxContainer/Number/NumberEdit" to="." method="_on_number_edit_text_submitted"]
+[connection signal="gui_input" from="HBoxContainer/Number/CueNumber" to="." method="_on_cue_number_gui_input"]
+[connection signal="focus_exited" from="HBoxContainer/Name/NameEdit" to="." method="_on_name_edit_focus_exited"]
+[connection signal="text_submitted" from="HBoxContainer/Name/NameEdit" to="." method="_on_name_edit_text_submitted"]
+[connection signal="gui_input" from="HBoxContainer/Name/CueName" to="." method="_on_cue_name_gui_input"]

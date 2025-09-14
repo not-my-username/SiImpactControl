@@ -1,0 +1,119 @@
+[gd_scene load_steps=8 format=3 uid="uid://bd2r3p1f14cnc"]
+
+[ext_resource type="Script" uid="uid://be7non2vwg63o" path="res://panels/Launcher/Launcher.gd" id="1_0ywws"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_77w78"]
+[ext_resource type="FontFile" uid="uid://bw0fcm2qsgn2p" path="res://assets/icons/RubikMonoOne-Regular.ttf" id="3_xro48"]
+[ext_resource type="Texture2D" uid="uid://gvgx25x56vbs" path="res://assets/icons/Edit.svg" id="4_ywta1"]
+[ext_resource type="PackedScene" uid="uid://etvdjxm6awtl" path="res://components/NetworkSettings/NetworkSettings.tscn" id="5_xro48"]
+[ext_resource type="PackedScene" uid="uid://cvgu8px0jpxnn" path="res://components/ConnectProgressBar/ConnectProgressBar.tscn" id="6_ywta1"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_g27kj"]
+font = ExtResource("3_xro48")
+font_size = 25
+
+[node name="Launcher" type="PanelContainer" node_paths=PackedStringArray("tree", "network_state_toggle", "ip_edit_button", "ip_addr_label", "start_control_button", "locate_button", "network_settings", "connect_progress_bar")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_77w78")
+script = ExtResource("1_0ywws")
+tree = NodePath("VBoxContainer/Tree")
+network_state_toggle = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/NetworkToggle/NetworkStateToggle")
+ip_edit_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/NetworkSettings/HBoxContainer/EditNetworkSettings")
+ip_addr_label = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/NetworkSettings/HBoxContainer/Label")
+start_control_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/StartControl")
+locate_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/Locate")
+network_settings = NodePath("NetworkSettings")
+connect_progress_bar = NodePath("ConnectProgressBar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "SiImpact Controller"
+label_settings = SubResource("LabelSettings_g27kj")
+
+[node name="Tree" type="Tree" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+column_titles_visible = true
+hide_root = true
+select_mode = 1
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="StartControl" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Start Control"
+
+[node name="Locate" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Locate Device"
+
+[node name="NetworkToggle" type="PanelContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="NetworkStateToggle" type="CheckButton" parent="VBoxContainer/PanelContainer2/HBoxContainer/NetworkToggle"]
+layout_mode = 2
+disabled = true
+text = "Go Online"
+
+[node name="NetworkSettings" type="PanelContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer/NetworkSettings"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/HBoxContainer/NetworkSettings/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "No Addr"
+
+[node name="EditNetworkSettings" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/NetworkSettings/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("4_ywta1")
+
+[node name="NetworkSettings" parent="." instance=ExtResource("5_xro48")]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ConnectProgressBar" parent="." instance=ExtResource("6_ywta1")]
+visible = false
+layout_mode = 2
+
+[connection signal="item_selected" from="VBoxContainer/Tree" to="." method="_on_tree_item_selected"]
+[connection signal="nothing_selected" from="VBoxContainer/Tree" to="." method="_on_tree_nothing_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/StartControl" to="." method="_on_start_control_pressed"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer2/HBoxContainer/NetworkToggle/NetworkStateToggle" to="." method="_on_network_state_toggle_toggled"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/NetworkSettings/HBoxContainer/EditNetworkSettings" to="." method="_on_edit_network_settings_pressed"]
+[connection signal="settings_confirmed" from="NetworkSettings" to="." method="_on_network_settings_settings_confirmed"]
+[connection signal="cancel_pressed" from="ConnectProgressBar" to="." method="_on_connect_progress_bar_cancel_pressed"]
+[connection signal="connected_to_device" from="ConnectProgressBar" to="." method="_on_connect_progress_bar_connected_to_device"]
