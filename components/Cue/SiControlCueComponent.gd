@@ -29,7 +29,7 @@ signal cue_number_changed(new_number: int)
 
 
 ## Stored cue data
-var data: SiCuesControl.CueData
+var data: CueData
 
 
 ## The stylebox for this cue item
@@ -140,7 +140,7 @@ func serialize() -> Dictionary:
 		"number": _number,
 		"name": _cue_name,
 		"color": _color,
-		"data": data.data
+		"data": data.save()
 	}
 
 

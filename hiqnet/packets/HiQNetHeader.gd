@@ -78,33 +78,6 @@ static var ClassTypes: Dictionary[int, Script] = {
 }
 
 
-## Class to repersent a parameter on a device
-class Parameter extends Object:
-	## Parameter ID
-	var id: int = 0
-	
-	## DataType of the value
-	var data_type: DataType = DataType.BYTE
-	
-	## The value
-	var value: Variant = 0
-	
-	
-	## Init
-	func _init(p_id: int, p_data_type: DataType = data_type, p_value: Variant = value) -> void:
-		id = p_id
-		data_type = p_data_type
-		value = p_value
-	
-	## Converts this Parameter into a string for printing
-	func _to_string() -> String:
-		return str("Parameter(", id, ", ", DataType.keys()[data_type], ", ", value, ")")
-	
-	## Returns a new copy of this Parameter
-	func duplicate() -> Parameter:
-		return Parameter.new(id, data_type, value)
-
-
 ## HiQNet ID of this device
 var source_device: int = 00000
 

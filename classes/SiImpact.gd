@@ -249,28 +249,28 @@ func poll() -> void:
 
 ## Called when the mute button is toggled on any one of the channels
 func mute_channel(p_mute_state: bool, p_type: ChannelType, p_channel: MixerChannel) -> void:
-	var parameter: HiQNetHeader.Parameter
+	var parameter: Parameter
 	var address: Array
 	
 	match p_type:
 		ChannelType.MixerChannel:
-			parameter = HiQNetHeader.Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
+			parameter = Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
 			address = master_sends_address
 		
 		ChannelType.MasterBus:
-			parameter = HiQNetHeader.Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
+			parameter = Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
 			address = master_bus_address
 		
 		ChannelType.MixBus:
-			parameter = HiQNetHeader.Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
+			parameter = Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
 			address = mix_bus_address
 		
 		ChannelType.MatrixBus:
-			parameter = HiQNetHeader.Parameter.new(p_channel + MixBus.MIX_14, HiQNetHeader.DataType.LONG, int(p_mute_state))
+			parameter = Parameter.new(p_channel + MixBus.MIX_14, HiQNetHeader.DataType.LONG, int(p_mute_state))
 			address = mix_bus_address
 		
 		ChannelType.VCA:
-			parameter = HiQNetHeader.Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
+			parameter = Parameter.new(p_channel, HiQNetHeader.DataType.LONG, int(p_mute_state))
 			address = vca_address
 	
 	device.set_parameters(address, address, [parameter])
@@ -278,28 +278,28 @@ func mute_channel(p_mute_state: bool, p_type: ChannelType, p_channel: MixerChann
 
 ## Called when the mute button is toggled on any one of the channels
 func set_channel_fader(p_db: int, p_type: ChannelType, p_channel: MixerChannel) -> void:
-	var parameter: HiQNetHeader.Parameter
+	var parameter: Parameter
 	var address: Array
 	
 	match p_type:
 		ChannelType.MixerChannel:
-			parameter = HiQNetHeader.Parameter.new(p_channel + mixer_channel_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
+			parameter = Parameter.new(p_channel + mixer_channel_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
 			address = master_sends_address
 		
 		ChannelType.MasterBus:
-			parameter = HiQNetHeader.Parameter.new(p_channel + master_bus_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
+			parameter = Parameter.new(p_channel + master_bus_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
 			address = master_bus_address
 		
 		ChannelType.MixBus:
-			parameter = HiQNetHeader.Parameter.new(p_channel + mix_bus_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
+			parameter = Parameter.new(p_channel + mix_bus_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
 			address = mix_bus_address
 		
 		ChannelType.MatrixBus:
-			parameter = HiQNetHeader.Parameter.new(p_channel + mix_bus_fader_start_pid + MixBus.MIX_14, HiQNetHeader.DataType.LONG, p_db)
+			parameter = Parameter.new(p_channel + mix_bus_fader_start_pid + MixBus.MIX_14, HiQNetHeader.DataType.LONG, p_db)
 			address = mix_bus_address
 		
 		ChannelType.VCA:
-			parameter = HiQNetHeader.Parameter.new(p_channel + vca_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
+			parameter = Parameter.new(p_channel + vca_fader_start_pid, HiQNetHeader.DataType.LONG, p_db)
 			address = vca_address
 	
 	device.set_parameters(address, address, [parameter])
@@ -437,14 +437,14 @@ func _on_get_parameters_recieved(address: Array, parameters: Array) -> void:
 				channel_name_changed.emit(pid, ChannelType.MixerChannel, parameters[pid][1])
 	
 		master_sends_address:
-			for parameter: HiQNetHeader.Parameter in parameters:
+			for parameter: Parameter in parameters:
 				if parameter.id <= mixer_channel_fader_start_pid:
 					channel_muted.emit(parameter.id, ChannelType.MixerChannel, bool(parameter.value))
 				else:
 					channel_fader_moved.emit(parameter.id - mixer_channel_fader_start_pid, ChannelType.MixerChannel, parameter.value)
 		
 		mix_bus_address:
-			for parameter: HiQNetHeader.Parameter in parameters:
+			for parameter: Parameter in parameters:
 				if parameter.id <= mix_bus_fader_start_pid:
 					if parameter.id > MixBus.MIX_14:
 						channel_muted.emit(parameter.id - MixBus.MIX_14, ChannelType.MatrixBus, bool(parameter.value))
@@ -457,14 +457,14 @@ func _on_get_parameters_recieved(address: Array, parameters: Array) -> void:
 						channel_fader_moved.emit(parameter.id - mix_bus_fader_start_pid, ChannelType.MixBus, parameter.value)
 		
 		vca_address:
-			for parameter: HiQNetHeader.Parameter in parameters:
+			for parameter: Parameter in parameters:
 				if parameter.id <= vca_fader_start_pid:
 					channel_muted.emit(parameter.id, ChannelType.VCA, bool(parameter.value))
 				else:
 					channel_fader_moved.emit(parameter.id - vca_fader_start_pid, ChannelType.VCA, parameter.value)
 		
 		master_bus_address:
-			for parameter: HiQNetHeader.Parameter in parameters:
+			for parameter: Parameter in parameters:
 				if parameter.id <= master_bus_fader_start_pid:
 					channel_muted.emit(parameter.id, ChannelType.MasterBus, bool(parameter.value))
 				else:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://c51tujhwllw0p"]
+[gd_scene load_steps=42 format=3 uid="uid://c51tujhwllw0p"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_scfol"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_280mo"]
@@ -13,10 +13,14 @@
 [ext_resource type="PackedScene" uid="uid://c6w0n40y16pob" path="res://components/Channel/Channel.tscn" id="9_xief2"]
 [ext_resource type="Script" uid="uid://k4i8a50go72o" path="res://panels/SiImpactControl/Cues.gd" id="10_8m63c"]
 [ext_resource type="Texture2D" uid="uid://cgc47wmucmcbb" path="res://assets/icons/Delete.svg" id="10_k0jyk"]
+[ext_resource type="Script" uid="uid://cy6hr0e3kwc3o" path="res://panels/SiImpactControl/SiCuesEdit.gd" id="10_kyo6j"]
+[ext_resource type="Texture2D" uid="uid://hev78r0wps42" path="res://assets/icons/Add.svg" id="10_s05ek"]
 [ext_resource type="Texture2D" uid="uid://wtt3cjeen16b" path="res://assets/icons/Compress.svg" id="10_vnulu"]
 [ext_resource type="Texture2D" uid="uid://c0ti1wug632qy" path="res://assets/icons/Download.svg" id="11_8m63c"]
+[ext_resource type="Texture2D" uid="uid://dk33kk474rmka" path="res://assets/icons/EmptyCheckBox.svg" id="11_8mbhr"]
 [ext_resource type="FontFile" uid="uid://cs88pnpm7j2x4" path="res://assets/fonts/RubikMonoOne-Regular.ttf" id="11_bhe6j"]
 [ext_resource type="Texture2D" uid="uid://cuum42i0s3gup" path="res://assets/icons/ArrowUpwards.svg" id="12_bhe6j"]
+[ext_resource type="Texture2D" uid="uid://2b1kvlw0h5k6" path="res://assets/icons/CheckBox.svg" id="12_qs6ob"]
 [ext_resource type="Texture2D" uid="uid://bt18yd73u1p41" path="res://assets/icons/Update.svg" id="13_0qs76"]
 [ext_resource type="Texture2D" uid="uid://dpr41g5b8g22c" path="res://assets/icons/ArrowDownwards.svg" id="13_hq16r"]
 [ext_resource type="Script" uid="uid://ddal5hsdvk0j7" path="res://classes/OSCServer.gd" id="16_fbe4j"]
@@ -32,6 +36,10 @@
 [ext_resource type="Texture2D" uid="uid://boqnt4x8xsfj8" path="res://assets/icons/Magenta.svg" id="26_o6tug"]
 [ext_resource type="Texture2D" uid="uid://b0goccev44hcp" path="res://assets/icons/Gray.svg" id="27_u7s1s"]
 [ext_resource type="Texture2D" uid="uid://brw4wk3ooat6p" path="res://assets/icons/DarkGray.svg" id="28_vprpp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qs6ob"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2pmpy"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_280mo"]
 
@@ -158,10 +166,11 @@ size_flags_vertical = 3
 [node name="TopPanel" type="TabContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 3
 drag_to_rearrange_enabled = true
 
 [node name="Input" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -174,6 +183,125 @@ metadata/_tab_index = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
+
+[node name="EditCue" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel" node_paths=PackedStringArray("cues_control", "tree", "no_cue_selected_label", "follow_active_button", "cue_number_spinbox", "address_filter_option", "display_mode_option", "add_address_button", "add_parameter_button", "cell_data_type_option", "disable_when_no_active_cue")]
+layout_mode = 2
+script = ExtResource("10_kyo6j")
+cues_control = NodePath("../../../../RightPanel/Cues")
+tree = NodePath("Tree")
+no_cue_selected_label = NodePath("Tree/NoCueSelected")
+follow_active_button = NodePath("PanelContainer/HBoxContainer/FollowActive")
+cue_number_spinbox = NodePath("PanelContainer/HBoxContainer/CueNumber")
+address_filter_option = NodePath("PanelContainer/HBoxContainer/AddressFilter")
+display_mode_option = NodePath("PanelContainer/HBoxContainer/DisplayMode")
+add_address_button = NodePath("PanelContainer2/HBoxContainer/AddAddress")
+add_parameter_button = NodePath("PanelContainer2/HBoxContainer/AddParameter")
+cell_data_type_option = NodePath("PanelContainer2/HBoxContainer/CellDataType")
+disable_when_no_active_cue = [NodePath("PanelContainer/HBoxContainer/AddressFilter"), NodePath("PanelContainer/HBoxContainer/DisplayMode"), NodePath("PanelContainer2/HBoxContainer/AddAddress"), NodePath("PanelContainer2/HBoxContainer/AddParameter"), NodePath("PanelContainer2/HBoxContainer/CellDataType")]
+metadata/_tab_index = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer"]
+layout_mode = 2
+
+[node name="FollowActive" type="CheckButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Follow the active cue"
+button_pressed = true
+text = "Follow Active"
+
+[node name="CueNumber" type="SpinBox" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+tooltip_text = "Set cue number to display"
+prefix = "Cue:"
+
+[node name="AddressFilter" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+selected = 0
+allow_reselect = true
+item_count = 1
+popup/item_0/text = "Address Filter"
+popup/item_0/id = 0
+popup/item_0/disabled = true
+popup/item_0/separator = true
+
+[node name="DisplayMode" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "DisplayMode:
+Raw: Show each cell as its raw value
+Checkbox: Show each cell as a boolen True of False
+Decibel: Show each cell as a moveable logarithmic fader"
+disabled = true
+selected = 0
+item_count = 3
+popup/item_0/text = "Raw"
+popup/item_0/id = 0
+popup/item_1/text = "Checkbox"
+popup/item_1/id = 1
+popup/item_2/text = "Decibel"
+popup/item_2/id = 2
+
+[node name="Tree" type="Tree" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_icons/unchecked_disabled = ExtResource("11_8mbhr")
+theme_override_icons/checked_disabled = ExtResource("12_qs6ob")
+theme_override_icons/unchecked = ExtResource("11_8mbhr")
+theme_override_icons/checked = ExtResource("12_qs6ob")
+theme_override_styles/selected = SubResource("StyleBoxEmpty_qs6ob")
+theme_override_styles/selected_focus = SubResource("StyleBoxEmpty_2pmpy")
+hide_folding = true
+hide_root = true
+
+[node name="NoCueSelected" type="Label" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/Tree"]
+modulate = Color(0.581033, 0.581033, 0.581033, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -68.0
+offset_top = -11.5
+offset_right = 68.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "No Cue Selected"
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2"]
+layout_mode = 2
+
+[node name="AddAddress" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Address"
+icon = ExtResource("10_s05ek")
+
+[node name="AddParameter" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Parameter"
+icon = ExtResource("10_s05ek")
+
+[node name="CellDataType" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+disabled = true
+selected = 0
+item_count = 1
+popup/item_0/text = "Cell Data Type"
+popup/item_0/id = 0
+popup/item_0/disabled = true
+popup/item_0/separator = true
 
 [node name="BottomPanel" type="TabContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer"]
 layout_mode = 2
@@ -498,6 +626,10 @@ auto_connect = false
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ToggleTop" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ToggleRight" to="VBoxContainer/HSplitContainer/RightPanel" method="set_visible"]
 [connection signal="file_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel/Settings/FileDialog" to="VBoxContainer/HSplitContainer/HSplitContainer/LeftPanel/Settings" method="_on_file_dialog_file_selected"]
+[connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer/FollowActive" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_follow_active_toggled"]
+[connection signal="value_changed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer/CueNumber" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_cue_number_value_changed"]
+[connection signal="item_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer/AddressFilter" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_address_filter_item_selected"]
+[connection signal="item_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer/DisplayMode" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_display_mode_item_selected"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/CH1-64" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/CH" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/ST1-8" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/ST" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/MIX1-14" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/MIX" method="set_visible"]

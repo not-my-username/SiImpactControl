@@ -26,6 +26,9 @@ signal vd_changed(id: int, vd: Array)
 ## Emitted when PID from and to is changed
 signal vd_pids_changed(id: int, pid_from: int, pid_to: int)
 
+## Emitted when a cue is selected
+signal cue_selected(cue: int)
+
 
 ## Default bg colors options
 @export var cue_bg_color_options: Array[Color] = [Color.RED, Color.DARK_ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.DODGER_BLUE, Color.PURPLE, Color.MAGENTA, Color.DIM_GRAY, Color(0.2, 0.2, 0.2), Color.TRANSPARENT]
@@ -89,22 +92,8 @@ const _reorder_cues_mandatory_prompt: String = "This cue number already exists. 
 const _reorder_cues_optional_prompt: String = "Would you like to re-order all subsequent cues"
 
 
-## Class to represent stored data in a Cue
-class CueData extends RefCounted:
-	## Stores all data { [address...]: { PID: HiQNetHeadder.Parameter} }
-	var data: Dictionary[Array, Dictionary]
-	
-	## Init
-	func _init(p_data: Dictionary[Array, Dictionary] = {}) -> void:
-		data = p_data
-	
-	
-	## Clears the data
-	func clear() -> void:
-		data.clear()
 
-
-## The RefMap for cues
+## RefMap for cue_number:SiControlCueComponent
 var _cues: RefMap = RefMap.new()
 
 ## List of sorted cue numbers
@@ -261,7 +250,7 @@ func set_vd(vd: Array, id: int) -> void:
 		_virtual_devices[id].vd = vd
 		
 		if not mixer.device.is_subscribed_to(vd):
-			mixer.device.param_sub_all(vd)
+			mixer.device.subscribe_to_all_in(vd)
 		
 		vd_changed.emit(id, vd)
 
@@ -299,9 +288,22 @@ func auto_create_cues(cues: Dictionary[String, Array], address: Array = [], pid_
 		var addressed_data: Dictionary = data[address]
 		
 		for pid: int in range(pid_range[0], pid_range[1] + 1):
-			addressed_data[pid] = HiQNetHeader.Parameter.new(pid, HiQNetHeader.DataType.LONG, 1 if pid in cues[cue_name] else 0)
+			addressed_data[pid] = Parameter.new(pid, HiQNetHeader.DataType.LONG, 1 if pid in cues[cue_name] else 0)
 		
 		_create_cue(-1, cue_name, Color.TRANSPARENT, false, false, CueData.new(data))
+
+
+## Returns the CueData for a given cue number
+func get_cue_data_from_number(p_cue_number: int) -> CueData:
+	if _cues.has_left(p_cue_number):
+		return _cues.left(p_cue_number).data
+	else:
+		return null
+
+
+## Gets the current cue number
+func get_current_cue_number() -> int:
+	return _selected_cue.get_number() if _active_cue else -1
 
 
 ## Sets the store mode state
@@ -342,8 +344,8 @@ func _get_parameters_from_device() -> void:
 		#mixer.device.multi_param_get(device.vd, range(device.pid_from, device.pid_to + 1))
 	
 	for address: Array in _wanted_pids:
-		var data: Dictionary[int, HiQNetHeader.Parameter] = mixer.device.get_parameters_from_cache(address, Array(_wanted_pids[address], TYPE_INT, "", null))
-		for parameter: HiQNetHeader.Parameter in data.values():
+		var data: Dictionary[int, Parameter] = mixer.device.get_parameters_from_cache(address, Array(_wanted_pids[address], TYPE_INT, "", null))
+		for parameter: Parameter in data.values():
 			_active_cue.data.data.get_or_add(address, {})[parameter.id] = parameter
 	
 	_set_store_mode(false)
@@ -426,6 +428,7 @@ func _select_cue(cue_number: int) -> void:
 		button.disabled = cue_number == -1
 	
 	_ensure_cue_visable(cue_number)
+	cue_selected.emit(cue_number)
 
 
 ## Updates a cue by getting new data from the mixer
@@ -744,7 +747,7 @@ func load(saved_data: Dictionary):
 			type_convert(saved_cue.get("color"), TYPE_COLOR), 
 			false,
 			false,
-			type_convert(saved_cue.get("stored_data"), TYPE_DICTIONARY)
+			CueData.load(type_convert(saved_cue.get("data"), TYPE_DICTIONARY))
 		)
 	
 	_update_cue_sorting()

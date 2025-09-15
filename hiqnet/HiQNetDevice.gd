@@ -127,14 +127,14 @@ var _remote_session_number: int = 0
 var _active_subscriptions: Array[Array]
 
 ## All the attributes in the "Device Manager Virtual Device" of this device
-var _local_device_manager_attributes: Dictionary[int, HiQNetHeader.Parameter] = {
-	AttributeID.ClassName: 			HiQNetHeader.Parameter.new(AttributeID.ClassName, DataType.STRING, "Si Impact 2.0"),
-	AttributeID.NameString: 		HiQNetHeader.Parameter.new(AttributeID.NameString, DataType.STRING, "Si Impact 2.0"),
-	AttributeID.SoftwareVersion: 	HiQNetHeader.Parameter.new(AttributeID.SoftwareVersion, DataType.STRING, "V2.0")
+var _local_device_manager_attributes: Dictionary[int, Parameter] = {
+	AttributeID.ClassName: 			Parameter.new(AttributeID.ClassName, DataType.STRING, "Si Impact 2.0"),
+	AttributeID.NameString: 		Parameter.new(AttributeID.NameString, DataType.STRING, "Si Impact 2.0"),
+	AttributeID.SoftwareVersion: 	Parameter.new(AttributeID.SoftwareVersion, DataType.STRING, "V2.0")
 }
 
 ## All the attributes in the "Device Manager Virtual Device" of the remote device
-var _remote_device_manager_attributes: Dictionary[int, HiQNetHeader.Parameter] = {
+var _remote_device_manager_attributes: Dictionary[int, Parameter] = {
 	
 }
 
@@ -410,7 +410,7 @@ func handle_message(p_message: HiQNetHeader) -> void:
 		MessageType.GetAttributes:
 			p_message = p_message as HiQNetGetAttributes
 			if p_message.is_information():
-				for attribute: HiQNetHeader.Parameter in p_message.set_attributes.values():
+				for attribute: Parameter in p_message.set_attributes.values():
 					_remote_device_manager_attributes[attribute.id] = attribute.duplicate()
 					
 					match attribute.id:
@@ -424,7 +424,7 @@ func handle_message(p_message: HiQNetHeader) -> void:
 			p_message = p_message as HiQNetMultiParamSet
 			
 			var cache: Dictionary = _remote_parameter_cache.get_or_add(p_message.dest_address, {})
-			for parameter: HiQNetHeader.Parameter in p_message.set_parameters.values():
+			for parameter: Parameter in p_message.set_parameters.values():
 				cache[parameter.id] = parameter
 			
 			parameters_changed.emit(p_message.dest_address, p_message.set_parameters.values())
@@ -460,7 +460,7 @@ func send_get_attributes(p_attributes: Array[int], p_transport_type: TransportTy
 	var message: HiQNetGetAttributes = auto_full_headder(HiQNetGetAttributes.new())
 	
 	for id: int in p_attributes:
-		message.get_attributes[id] = HiQNetHeader.Parameter.new(id)
+		message.get_attributes[id] = Parameter.new(id)
 	
 	return send_message(message, p_transport_type)
 
@@ -518,7 +518,7 @@ func set_parameters(p_source_address: Array, p_dest_address: Array, p_parameters
 	var cache: Dictionary = _remote_parameter_cache.get_or_add(p_dest_address, {})
 	
 	for parameter: Variant in p_parameters:
-		if parameter is HiQNetHeader.Parameter:
+		if parameter is Parameter:
 			message.set_parameters[parameter.id] = parameter
 			cache[parameter.id] = parameter
 	
@@ -532,8 +532,8 @@ func get_parameters() -> void:
 
 
 ## Gets remote device parameters from the local cache
-func get_parameters_from_cache(p_address: Array, p_pids: Array[int]) -> Dictionary[int, HiQNetHeader.Parameter]:
-	var result: Dictionary[int, HiQNetHeader.Parameter] = {}
+func get_parameters_from_cache(p_address: Array, p_pids: Array[int]) -> Dictionary[int, Parameter]:
+	var result: Dictionary[int, Parameter] = {}
 	
 	if p_address not in _remote_parameter_cache:
 		return result
