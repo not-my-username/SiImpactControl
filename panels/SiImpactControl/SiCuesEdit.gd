@@ -219,3 +219,21 @@ func _on_address_filter_item_selected(p_index: int) -> void:
 func _on_display_mode_item_selected(p_index: int) -> void:
 	_current_display_mode = p_index
 	_reload_tree()
+
+
+## Called when an item is edited in the tree
+func _on_tree_item_edited() -> void:
+	var address: Array = _address_items.right(tree.get_edited())
+	var pid: int = _pid_columns.right(tree.get_edited_column())
+	var value: Variant
+	
+	match _current_display_mode:
+		DisplayMode.Raw:
+			value = tree.get_edited().get_text(tree.get_edited_column())
+		DisplayMode.CheckBox:
+			value = int(tree.get_edited().is_checked(tree.get_edited_column()))
+		DisplayMode.Decibel:
+			value = SiImpact.fader_to_db(int(tree.get_edited().get_text(tree.get_edited_column())))
+	
+	(_current_cue.data[address][pid] as Parameter).value = value
+	prints(address, pid, value)
