@@ -13,6 +13,13 @@ enum DisplayMode {
 }
 
 
+## Default DataType
+const DefaultDataType: int = HiQNetHeader.DataType.LONG
+
+## Default Parameter Value
+const DefaultDataValue: Variant = 0
+
+
 ## The SiCuesControl panel
 @export var cues_control: SiCuesControl
 
@@ -37,8 +44,8 @@ enum DisplayMode {
 ## The OptionButton for setting the display mode
 @export var display_mode_option: OptionButton
 
-## The Button to add an HiQNet address entry into the CueData
-@export var add_address_button: Button
+## The Button to delete a parameter from the cue
+@export var delete_button: Button
 
 ## The Button to add a HiQNet Parameter entry into the CueData
 @export var add_parameter_button: Button
@@ -46,11 +53,13 @@ enum DisplayMode {
 ## The OptionButton for setting the cell data type
 @export var cell_data_type_option: OptionButton
 
+## The SiCueAddParameter dialog to add data
+@export var add_parameter_window: SiCueAddParameter
+
 @export_group("Node Groups")
 
 ## List of Buttons to disable when there is no active cue
 @export var disable_when_no_active_cue: Array[Button]
-
 
 
 ## True if the table should follow the active cue
@@ -76,6 +85,9 @@ var _address_items: RefMap = RefMap.new()
 
 ## RefMap for PID: tree_column
 var _pid_columns: RefMap = RefMap.new()
+
+## All editable columns: { TreeItem: { int(column): True|False } }
+var _editable_items: Dictionary[TreeItem, Dictionary]
 
 
 ## Ready
@@ -133,34 +145,60 @@ func _reload_tree() -> void:
 		item.set_text(0, string_address)
 		_address_items.map(address, item)
 		
-		for pid: int in data[address]:
-			var parameter: Parameter = data[address][pid]
-			var column: int
-			
-			if _pid_columns.has_left(pid):
-				column = _pid_columns.left(pid)
-			else:
-				column = tree.columns
-				tree.columns = column + 1
-				_pid_columns.map(pid, column)
-				tree.set_column_title(column, str(pid))
-			
-			item.set_editable(column, true)
-			
-			match _current_display_mode:
-				DisplayMode.Raw:
-					item.set_text(column, str(parameter.value))
-				
-				DisplayMode.CheckBox:
-					item.set_cell_mode(column, TreeItem.CELL_MODE_CHECK)
-					item.set_checked(column, bool(int(parameter.value)))
-				
-				DisplayMode.Decibel:
-					item.set_text(column, str(snappedf(SiImpact.db_to_fader(int(parameter.value)), 0.1), "dB"))
+		var pids: Array = data[address].keys()
+		pids.sort()
+		
+		for pid: int in pids:
+			_add_parameter_columns(item, data[address][pid], pid, _current_display_mode)
 	
 	_disable_edit_buttons(false)
-	print(_addresses.find(_current_address_filter))
 	address_filter_option.select(max(0, _addresses.find(_current_address_filter) + 1))
+
+
+## Adds each parameter to the TreeItem
+func _add_parameter_columns(p_item: TreeItem, p_parameter: Parameter, p_pid: int, p_display_mode: DisplayMode) -> void:
+	var column: int
+	
+	if _pid_columns.has_left(p_pid):
+		column = _pid_columns.left(p_pid)
+	else:
+		column = tree.columns
+		tree.columns = column + 1
+		_pid_columns.map(p_pid, column)
+		tree.set_column_title(column, str(p_pid))
+	
+	
+	match _current_display_mode:
+		DisplayMode.Raw:
+			p_item.set_text(column, str(p_parameter.value))
+			_set_item_editable(p_item, column, true)
+			
+		DisplayMode.CheckBox:
+			match p_parameter.data_type:
+				HiQNetHeader.DataType.BLOCK, HiQNetHeader.DataType.STRING:
+					p_item.set_text(column, "TypeErr")
+				_:
+					p_item.set_cell_mode(column, TreeItem.CELL_MODE_CHECK)
+					p_item.set_checked(column, bool(type_convert(p_parameter.value, TYPE_INT)))
+					_set_item_editable(p_item, column, true)
+		
+		DisplayMode.Decibel:
+			match p_parameter.data_type:
+				HiQNetHeader.DataType.LONG, HiQNetHeader.DataType.ULONG:
+					p_item.set_text(column, str(snappedf(SiImpact.db_to_fader(type_convert(p_parameter.value, TYPE_INT)), 0.1), "dB"))
+					_set_item_editable(p_item, column, true)
+				_:
+					p_item.set_text(column, "TypeErr")
+
+
+## Sets the editable state on a tree items column
+func _set_item_editable(p_item: TreeItem, p_column: int, p_editable: bool) -> void:
+	_editable_items.get_or_add(p_item, {})[p_column] = p_editable
+
+
+## Checks if the given item is editable
+func _is_item_editable(p_item: TreeItem, p_column: int) -> bool:
+	return _editable_items.get(p_item, {}).get(p_column, false)
 
 
 ## Resets the tree
@@ -169,6 +207,7 @@ func _reset_tree() -> void:
 	tree.columns = 1
 	tree.column_titles_visible = false
 	tree.create_item()
+	delete_button.set_disabled(true)
 	
 	address_filter_option.clear()
 	address_filter_option.add_item("All", 0)
@@ -176,6 +215,7 @@ func _reset_tree() -> void:
 	_addresses.clear()
 	_address_items.clear()
 	_pid_columns.clear()
+	_editable_items.clear()
 
 
 ## Enables or disabled the edit buttons in disable_when_no_active_cue
@@ -236,4 +276,78 @@ func _on_tree_item_edited() -> void:
 			value = SiImpact.fader_to_db(int(tree.get_edited().get_text(tree.get_edited_column())))
 	
 	(_current_cue.data[address][pid] as Parameter).value = value
-	prints(address, pid, value)
+
+
+## Called for all GUI input in the tree
+func _on_tree_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
+		var item: TreeItem = tree.get_item_at_position(event.position)
+		var column: int = tree.get_column_at_position(event.position)
+		
+		if _is_item_editable(item, column):
+			tree.deselect_all()
+			item.select(column)
+			await get_tree().process_frame
+			await get_tree().process_frame
+			match _current_display_mode:
+				DisplayMode.Raw:
+					tree.edit_selected(true)
+				
+				DisplayMode.CheckBox:
+					item.set_checked(column, not item.is_checked(column))
+				
+				DisplayMode.Decibel:
+					pass
+
+
+## Called when nothing is selected in the tree
+func _on_tree_nothing_selected() -> void:
+	tree.deselect_all()
+	delete_button.set_disabled(true)
+
+
+## Called when an item is activated in the tree
+func _on_tree_item_activated() -> void:
+	var item: TreeItem = tree.get_selected()
+	var column: int = tree.get_selected_column()
+	var address: Array = _address_items.right(item)
+	var pid: int = _pid_columns.right(column)
+	
+	if _current_cue.data.get(address, {}).has(pid):
+		return
+	
+	var parameter: Parameter = Parameter.new(pid, DefaultDataType, DefaultDataValue)
+	_current_cue.data.get_or_add(address)[pid] = parameter
+	_add_parameter_columns(item, parameter, pid, _current_display_mode)
+
+
+## Called when an item is selected in the tree
+func _on_tree_item_selected() -> void:
+	delete_button.set_disabled(false)
+
+
+## Called when the AddParameter button is pressed
+func _on_add_parameter_pressed() -> void:
+	add_parameter_window.set_cue_data(_current_cue)
+	add_parameter_window.show()
+
+
+## Called when the cue is edited in the SiCueAddParameter dialog
+func _on_add_parameter_window_cue_edited() -> void:
+	_reload_tree()
+
+
+## Called when the Delete button is pressed
+func _on_delete_pressed() -> void:
+	var item: TreeItem = tree.get_selected()
+	var column: int = tree.get_selected_column()
+	var address: Array = _address_items.right(item)
+	
+	if column == 0:
+		_current_cue.data.erase(address)
+		
+	else:
+		var pid: int = _pid_columns.right(column)
+		_current_cue.data.get(address, {}).erase(pid)
+	
+	_reload_tree()

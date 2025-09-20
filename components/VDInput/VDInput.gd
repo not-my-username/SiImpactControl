@@ -30,16 +30,7 @@ func set_vd(vd: Array) -> void:
 
 ## Gets the inputted virtual device
 func get_vd() -> Array[int]:
-	if not len(text.split(".")) >= 4:
-		return []
-	
-	var vd: Array[int] = []
-	
-	for byte: String in text.split("."):
-		vd.append(clamp(int(byte), 0, 255))
-	
-	return vd
-
+	return HiQNetDevice.string_to_address(text)
 
 ## Checks the text
 func _check_text(new_text: String) -> bool:

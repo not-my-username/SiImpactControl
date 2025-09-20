@@ -45,6 +45,7 @@ enum DataType {
 	STRING,						## String
 	LONG64,						## Signed 64-bit
 	ULONG64,					## Unsigned 64-bit
+	NULL,						## Null DataType
 }
 
 

@@ -163,6 +163,27 @@ static func create_from_discovery(p_discovery: HiQNetDiscoInfo) -> HiQNetDevice:
 	return device
 
 
+## Converts and Array address to a String
+static func address_to_string(p_address: Array) -> String:
+	return ".".join(PackedStringArray(p_address))
+
+
+## Converts a String address to an Array
+static func string_to_address(p_string: String) -> Array:
+	if not len(p_string.split(".")) >= 4:
+		return []
+	
+	var address: Array[int] = []
+	
+	for byte: String in p_string.split("."):
+		if not byte or not byte.is_valid_int():
+			return []
+		
+		address.append(clamp(int(byte), 0, 255))
+	
+	return address
+
+
 ## Ready
 func _ready() -> void:
 	#get_attributes([AttributeID.ClassName, AttributeID.NameString])

@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://c51tujhwllw0p"]
+[gd_scene load_steps=45 format=3 uid="uid://c51tujhwllw0p"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_scfol"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_280mo"]
@@ -23,6 +23,10 @@
 [ext_resource type="Texture2D" uid="uid://2b1kvlw0h5k6" path="res://assets/icons/CheckBox.svg" id="12_qs6ob"]
 [ext_resource type="Texture2D" uid="uid://bt18yd73u1p41" path="res://assets/icons/Update.svg" id="13_0qs76"]
 [ext_resource type="Texture2D" uid="uid://dpr41g5b8g22c" path="res://assets/icons/ArrowDownwards.svg" id="13_hq16r"]
+[ext_resource type="Script" uid="uid://cgjbvxk3xxos1" path="res://components/VDInput/VDInput.gd" id="14_bj4mo"]
+[ext_resource type="Script" uid="uid://fa4rblli3dsy" path="res://panels/SiImpactControl/SiCueAddParameter.gd" id="14_le010"]
+[ext_resource type="StyleBox" uid="uid://drpfuhk8y61xk" path="res://assets/styles/SolidPanelPopup.tres" id="15_2nnjb"]
+[ext_resource type="Texture2D" uid="uid://b2yajpup2y2ac" path="res://assets/icons/Close.svg" id="15_le010"]
 [ext_resource type="Script" uid="uid://ddal5hsdvk0j7" path="res://classes/OSCServer.gd" id="16_fbe4j"]
 [ext_resource type="Script" uid="uid://c8rf6174uebfi" path="res://classes/OSCClient.gd" id="17_be4pb"]
 [ext_resource type="PackedScene" uid="uid://cg4b0ujwg563n" path="res://components/AutoCreateCuesDialog/AutoCreateCuesDialog.tscn" id="18_qwjdt"]
@@ -37,9 +41,16 @@
 [ext_resource type="Texture2D" uid="uid://b0goccev44hcp" path="res://assets/icons/Gray.svg" id="27_u7s1s"]
 [ext_resource type="Texture2D" uid="uid://brw4wk3ooat6p" path="res://assets/icons/DarkGray.svg" id="28_vprpp"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qs6ob"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2pmpy"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qs6ob"]
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_280mo"]
 
@@ -184,7 +195,7 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="EditCue" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel" node_paths=PackedStringArray("cues_control", "tree", "no_cue_selected_label", "follow_active_button", "cue_number_spinbox", "address_filter_option", "display_mode_option", "add_address_button", "add_parameter_button", "cell_data_type_option", "disable_when_no_active_cue")]
+[node name="EditCue" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel" node_paths=PackedStringArray("cues_control", "tree", "no_cue_selected_label", "follow_active_button", "cue_number_spinbox", "address_filter_option", "display_mode_option", "delete_button", "add_parameter_button", "cell_data_type_option", "add_parameter_window", "disable_when_no_active_cue")]
 layout_mode = 2
 script = ExtResource("10_kyo6j")
 cues_control = NodePath("../../../../RightPanel/Cues")
@@ -194,10 +205,11 @@ follow_active_button = NodePath("PanelContainer/HBoxContainer/FollowActive")
 cue_number_spinbox = NodePath("PanelContainer/HBoxContainer/CueNumber")
 address_filter_option = NodePath("PanelContainer/HBoxContainer/AddressFilter")
 display_mode_option = NodePath("PanelContainer/HBoxContainer/DisplayMode")
-add_address_button = NodePath("PanelContainer2/HBoxContainer/AddAddress")
+delete_button = NodePath("PanelContainer2/HBoxContainer/Delete")
 add_parameter_button = NodePath("PanelContainer2/HBoxContainer/AddParameter")
 cell_data_type_option = NodePath("PanelContainer2/HBoxContainer/CellDataType")
-disable_when_no_active_cue = [NodePath("PanelContainer/HBoxContainer/AddressFilter"), NodePath("PanelContainer/HBoxContainer/DisplayMode"), NodePath("PanelContainer2/HBoxContainer/AddAddress"), NodePath("PanelContainer2/HBoxContainer/AddParameter"), NodePath("PanelContainer2/HBoxContainer/CellDataType")]
+add_parameter_window = NodePath("AddParameterWindow")
+disable_when_no_active_cue = [NodePath("PanelContainer/HBoxContainer/AddressFilter"), NodePath("PanelContainer/HBoxContainer/DisplayMode"), NodePath("PanelContainer2/HBoxContainer/AddParameter"), NodePath("PanelContainer2/HBoxContainer/CellDataType")]
 metadata/_tab_index = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue"]
@@ -249,12 +261,13 @@ popup/item_2/id = 2
 [node name="Tree" type="Tree" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/inner_item_margin_left = 8
 theme_override_icons/unchecked_disabled = ExtResource("11_8mbhr")
 theme_override_icons/checked_disabled = ExtResource("12_qs6ob")
 theme_override_icons/unchecked = ExtResource("11_8mbhr")
 theme_override_icons/checked = ExtResource("12_qs6ob")
-theme_override_styles/selected = SubResource("StyleBoxEmpty_qs6ob")
-theme_override_styles/selected_focus = SubResource("StyleBoxEmpty_2pmpy")
+theme_override_styles/selected = SubResource("StyleBoxFlat_qs6ob")
+theme_override_styles/selected_focus = SubResource("StyleBoxFlat_qs6ob")
 hide_folding = true
 hide_root = true
 
@@ -280,17 +293,17 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2"]
 layout_mode = 2
 
-[node name="AddAddress" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer"]
-layout_mode = 2
-disabled = true
-text = "Address"
-icon = ExtResource("10_s05ek")
-
 [node name="AddParameter" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Parameter"
 icon = ExtResource("10_s05ek")
+
+[node name="Delete" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Delete"
+icon = ExtResource("10_k0jyk")
 
 [node name="CellDataType" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer"]
 layout_mode = 2
@@ -302,6 +315,100 @@ popup/item_0/text = "Cell Data Type"
 popup/item_0/id = 0
 popup/item_0/disabled = true
 popup/item_0/separator = true
+
+[node name="AddParameterWindow" type="Window" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" node_paths=PackedStringArray("address_option_button", "manual_address_input", "data_type_option", "pid_spin_box", "add_button")]
+initial_position = 5
+size = Vector2i(325, 205)
+visible = false
+script = ExtResource("14_le010")
+address_option_button = NodePath("PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/AddressOption")
+manual_address_input = NodePath("PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/ManualAddressInput")
+data_type_option = NodePath("PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/DataTypeOption")
+pid_spin_box = NodePath("PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/PID")
+add_button = NodePath("PanelContainer/VBoxContainer/PanelContainer3/HBoxContainer/Add")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("15_2nnjb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "Add Parameter"
+flat = true
+alignment = 0
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="AddressOption" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "Address:"
+popup/item_0/id = 0
+popup/item_0/disabled = true
+popup/item_0/separator = true
+
+[node name="ManualAddressInput" type="LineEdit" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0.0.0.0"
+script = ExtResource("14_bj4mo")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="DataTypeOption" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "Data Type"
+popup/item_0/id = 0
+popup/item_0/disabled = true
+popup/item_0/separator = true
+
+[node name="PID" type="SpinBox" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+prefix = "pid:"
+
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer3"]
+layout_mode = 2
+
+[node name="Cancel" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+icon = ExtResource("15_le010")
+
+[node name="Add" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Add"
+icon = ExtResource("10_s05ek")
 
 [node name="BottomPanel" type="TabContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer"]
 layout_mode = 2
@@ -630,7 +737,21 @@ auto_connect = false
 [connection signal="value_changed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer/CueNumber" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_cue_number_value_changed"]
 [connection signal="item_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer/AddressFilter" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_address_filter_item_selected"]
 [connection signal="item_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer/HBoxContainer/DisplayMode" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_display_mode_item_selected"]
+[connection signal="gui_input" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/Tree" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_tree_gui_input"]
+[connection signal="item_activated" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/Tree" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_tree_item_activated"]
 [connection signal="item_edited" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/Tree" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_tree_item_edited"]
+[connection signal="item_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/Tree" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_tree_item_selected"]
+[connection signal="nothing_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/Tree" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_tree_nothing_selected"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer/AddParameter" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_add_parameter_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/PanelContainer2/HBoxContainer/Delete" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_delete_pressed"]
+[connection signal="close_requested" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" method="_on_close_requested"]
+[connection signal="cue_edited" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue" method="_on_add_parameter_window_cue_edited"]
+[connection signal="item_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/AddressOption" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" method="_on_address_option_item_selected"]
+[connection signal="text_changed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/ManualAddressInput" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" method="_on_manual_address_input_text_changed"]
+[connection signal="item_selected" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/DataTypeOption" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" method="_on_data_type_option_item_selected"]
+[connection signal="value_changed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/PID" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" method="_on_pid_value_changed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer3/HBoxContainer/Cancel" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" method="_on_cancel_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow/PanelContainer/VBoxContainer/PanelContainer3/HBoxContainer/Add" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/TopPanel/EditCue/AddParameterWindow" method="_on_add_pressed"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/CH1-64" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/CH" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/ST1-8" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/ST" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/PanelContainer/VBoxContainer/MIX1-14" to="VBoxContainer/HSplitContainer/HSplitContainer/VSplitContainer/BottomPanel/Mixer/Channels/MIX" method="set_visible"]
