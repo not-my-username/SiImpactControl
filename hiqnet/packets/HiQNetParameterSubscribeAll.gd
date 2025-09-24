@@ -55,6 +55,6 @@ func _phrase_packet(p_packet: PackedByteArray) -> void:
 		decode_error = DecodeError.LENGTH_INVALID
 		return
 	
-	subscription_type = p_packet[0]
+	subscription_type = p_packet[0] as SubscriptionType
 	sensor_rate = (p_packet[1] << 8) | p_packet[2]
-	subscription_flags = (p_packet[3] << 8) | p_packet[4]
+	subscription_flags = (p_packet[3] << 8) | p_packet[4] as SubscriptionFlags

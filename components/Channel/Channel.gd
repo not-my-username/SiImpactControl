@@ -177,6 +177,7 @@ func set_fader(db: int) -> void:
 
 ## Sets the DB level on the fader DB label
 func set_fader_db_label(db: int) -> void:
+	@warning_ignore("integer_division")
 	fader_db_label.text = str(db / 64) + "dB"
 
 

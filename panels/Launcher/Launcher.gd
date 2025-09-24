@@ -97,19 +97,20 @@ func _on_tree_nothing_selected() -> void:
 
 
 ## Called when the network state changes in a device
-func _on_device_network_state_changed(p_network_state: HiQNetDevice.NetworkState, p_device: HiQNetDevice) -> void:
+func _on_device_network_state_changed(_p_network_state: HiQNetDevice.NetworkState, p_device: HiQNetDevice) -> void:
 	_devices.right(p_device).set_text(Columns.NETWORK_STATE, p_device.get_network_state_human())
 
 
 ## Called when network settings are confirmed
-func _on_network_settings_settings_confirmed(interface: String, address: String, netmask_length: int, device_id: int) -> void:
+func _on_network_settings_settings_confirmed(_p_interface: String, p_address: String, p_netmask_length: int, p_device_id: int) -> void:
 	network_settings.hide()
 	network_state_toggle.set_disabled(false)
 	
-	HQ.set_ip_address(address)
-	HQ.set_broadcast_address(HiQNetHeader.bytes_to_ip(Utils.get_broadcast(HiQNetHeader.ip_to_bytes(address), netmask_length)))
+	HQ.set_device_number(p_device_id)
+	HQ.set_ip_address(p_address)
+	HQ.set_broadcast_address(HiQNetHeader.bytes_to_ip(Utils.get_broadcast(HiQNetHeader.ip_to_bytes(p_address), p_netmask_length)))
 	
-	ip_addr_label.set_text(address + "/" + str(netmask_length))
+	ip_addr_label.set_text(p_address + "/" + str(p_netmask_length))
 
 
 ## Called when the EditNetworkSettings button is pressed

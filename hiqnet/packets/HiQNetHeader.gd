@@ -51,6 +51,7 @@ enum DataType {
 
 ## Flags enum (bit positions)
 enum Flags {
+	NONE						= 1,		 ## No Flags
 	REQUEST_ACK					= (1 << 0),  ## Request acknowledgment
 	ACKNOWLEDGEMENT				= (1 << 1),  ## Acknowledgement flag
 	INFORMATION					= (1 << 2),  ## Information flag
@@ -105,18 +106,6 @@ var sequence_number: int = 0x00
 
 ## Session number if flag set
 var session_number: int = 0  
-
-## Error code (decode only)
-var error_code: int = 0x02
-
-## Error string (decode only)
-var error_string: String = ""
-
-## Start sequence number for multipart (decode only)
-var start_seq_number: int = 0x02 
-
-## Bytes remaining in multipart (decode only)
-var bytes_remaining: int = 0  
 
 ## Decode error of this message
 var decode_error: DecodeError = DecodeError.NONE
@@ -345,7 +334,7 @@ static func decode_parameters(p_packet: PackedByteArray) -> Dictionary[int, Para
 		# Next byte is the DataType
 		if offset + 1 > p_packet.size():
 			break
-		var data_type: DataType = p_packet[offset]
+		var data_type: DataType = p_packet[offset] as DataType
 		offset += 1
 		
 		match data_type:
@@ -361,7 +350,6 @@ static func decode_parameters(p_packet: PackedByteArray) -> Dictionary[int, Para
 				if offset + string_length > p_packet.size():
 					break
 				
-				var slice: PackedByteArray = p_packet.slice(offset, offset + string_length)
 				var result: String = ""
 				
 				for index: int in range(0, string_length, 2):
@@ -425,8 +413,8 @@ static func encode_parameters(p_parameters: Dictionary[int, Parameter]) -> Packe
 				var length: int = ((len(ascii) * 2) + 2) if ascii else 0
 				packet.append_array(ba(length, 2)) # String Length
 				
-				for char: int in ascii:
-					packet.append_array(ba(char, 2)) # String Byte
+				for character: int in ascii:
+					packet.append_array(ba(character, 2)) # String Byte
 				
 				if length:
 					packet.append_array([0x00, 0x00]) # Append null terminator (2 bytes)
@@ -455,5 +443,6 @@ func _get_as_packet() -> PackedByteArray:
 
 
 ## Override this function to provide a decode a packet
+@warning_ignore("unused_parameter")
 func _phrase_packet(p_packet: PackedByteArray) -> void:
 	pass

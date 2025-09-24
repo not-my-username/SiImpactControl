@@ -126,6 +126,7 @@ var _remote_session_number: int = 0
 ## All active parameter subscriptions
 var _active_subscriptions: Array[Array]
 
+@warning_ignore("int_as_enum_without_cast")
 ## All the attributes in the "Device Manager Virtual Device" of this device
 var _local_device_manager_attributes: Dictionary[int, Parameter] = {
 	AttributeID.ClassName: 			Parameter.new(AttributeID.ClassName, DataType.STRING, "Si Impact 2.0"),
@@ -191,7 +192,7 @@ func _ready() -> void:
 
 
 ## Process
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	_tcp_peer.poll()
 	
 	var status: StreamPeerTCP.Status = _tcp_peer.get_status()
@@ -271,7 +272,7 @@ func end_session() -> void:
 	_remote_session_number = 0
 	_establish_session_once_connected = false
 	_tcp_message_queue.clear()
-	_tcp_status = 0
+	_tcp_status = StreamPeerTCP.STATUS_NONE
 	
 	disconnect_tcp()
 
@@ -452,7 +453,7 @@ func handle_message(p_message: HiQNetHeader) -> void:
 
 
 ## Auto fill the infomation in a HiQNetHeadder for sending to the remote device
-func auto_full_headder(p_headder: HiQNetHeader, p_flags: HiQNetHeader.Flags = 0, p_dest_address: Array[int] = [0, 0, 0, 0], p_source_address: Array[int] = [0, 0, 0, 0]) -> HiQNetHeader:
+func auto_full_headder(p_headder: HiQNetHeader, p_flags: HiQNetHeader.Flags = HiQNetHeader.Flags.NONE, p_dest_address: Array[int] = [0, 0, 0, 0], p_source_address: Array[int] = [0, 0, 0, 0]) -> HiQNetHeader:
 	p_headder.source_device = HQ.get_device_number()
 	p_headder.source_address = p_source_address
 	p_headder.dest_device = _device_number
@@ -525,7 +526,7 @@ func send_hello_res(p_local_session_number: int, p_remote_session_number: int) -
 
 ## Subscribe to all parameters in the given VD or object address
 func subscribe_to_all_in(p_address: Array, p_transport_type: TransportType = TransportType.AUTO) -> Error:
-	var message: HiQNetParameterSubscribeAll = auto_full_headder(HiQNetParameterSubscribeAll.new(), 0, Array(p_address, TYPE_INT, "", null))
+	var message: HiQNetParameterSubscribeAll = auto_full_headder(HiQNetParameterSubscribeAll.new(), HiQNetHeader.Flags.NONE, Array(p_address, TYPE_INT, "", null))
 	
 	if not is_subscribed_to(p_address):
 		_active_subscriptions.append(p_address)
@@ -535,7 +536,7 @@ func subscribe_to_all_in(p_address: Array, p_transport_type: TransportType = Tra
 
 ## Sets one or more parameters in a Virtual Device or Object
 func set_parameters(p_source_address: Array, p_dest_address: Array, p_parameters: Array, p_transport_type: TransportType = TransportType.AUTO) -> Error:
-	var message: HiQNetMultiParamSet = auto_full_headder(HiQNetMultiParamSet.new(), 0, Array(p_dest_address, TYPE_INT, "", null), Array(p_source_address, TYPE_INT, "", null))
+	var message: HiQNetMultiParamSet = auto_full_headder(HiQNetMultiParamSet.new(), HiQNetHeader.Flags.NONE, Array(p_dest_address, TYPE_INT, "", null), Array(p_source_address, TYPE_INT, "", null))
 	var cache: Dictionary = _remote_parameter_cache.get_or_add(p_dest_address, {})
 	
 	for parameter: Variant in p_parameters:

@@ -119,6 +119,8 @@ static func _split_sort_key(s: String) -> Array:
 	var parts = []
 	for match in regex.search_all(s):
 		var sub = match.get_string()
+		
+		@warning_ignore("incompatible_ternary")
 		parts.append(int(sub) if sub.is_valid_int() else sub)
 	
 	return parts

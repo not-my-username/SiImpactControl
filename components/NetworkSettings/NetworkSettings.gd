@@ -71,7 +71,7 @@ func _on_confirm_pressed() -> void:
 	
 	var address: String = selected.get_text(0)
 	var interface: String = selected.get_parent().get_text(0)
-	var netmask_length: int = netmask_length_spinbox.value
-	var device_id: int = device_id_spinbox.value
+	var netmask_length: int = int(netmask_length_spinbox.value)
+	var device_id: int = int(device_id_spinbox.value)
 	
 	settings_confirmed.emit(interface, address, netmask_length, device_id)

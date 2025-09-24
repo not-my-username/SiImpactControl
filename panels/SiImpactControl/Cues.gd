@@ -689,7 +689,20 @@ func _on_osc_server_message_received(address: Variant, value: Variant, time: Var
 			var cue_number_s: String = value[0]
 			if _qlab_cue_number_regex.search(cue_number_s) and int(cue_number_s) in _sorted_cue_numbers:
 				_seek_to_cue(int(cue_number_s))
-		
+			
+			else:
+				match value[1]:
+					"SINextCue":
+						_selection_down()
+					"SIPreviousCue":
+						_selection_up()
+					"SIGoSelectedCue":
+						_on_go_pressed()
+					"SIStoreNewCue":
+						_create_cue()
+					"SIUpdateSelectedCue":
+						_on_update_pressed()
+			
 		"/qlab/event/workspace/playhead":
 			if not value:
 				return

@@ -46,6 +46,7 @@ func save() -> Dictionary:
 
 
 ## Loads this SiControlPanel from dictionary
+@warning_ignore("unused_parameter")
 func load(saved_data: Dictionary):
 	pass
 

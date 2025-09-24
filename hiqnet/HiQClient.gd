@@ -15,9 +15,6 @@ signal discovery_state_changed(new_state)
 ## Emitted when a device is discovered on the network
 signal device_discovered(device: HiQNetDevice)
 
-## Emitted when a device is connected
-signal device_connected(device: HiQNetDevice)
-
 
 ## The TCP/UDP port for HiQNet
 const HIQNET_PORT: int = 3804
@@ -167,7 +164,7 @@ func _ready() -> void:
 
 
 ## Process
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	while _udp_broadcast.get_available_packet_count() > 0:
 		var packet: PackedByteArray = _udp_broadcast.get_packet()
 		var message: HiQNetHeader = HiQNetHeader.phrase_packet(packet)
@@ -200,14 +197,14 @@ func handle_message(p_message: HiQNetHeader, p_stream_peer: StreamPeerTCP = null
 	match p_message.message_type:
 		HiQNetHeader.MessageType.DiscoInfo:
 			if not has_seen_device(p_message.source_device):
-				var device: HiQNetDevice = HiQNetDevice.create_from_discovery(p_message)
-				add_child(device)
+				var new_device: HiQNetDevice = HiQNetDevice.create_from_discovery(p_message)
+				add_child(new_device)
 				
 				if HiQNetConfig.fetch_name_on_disco:
-					device.send_get_attributes([HiQNetGetAttributes.AttributeID.NameString], HiQNetDevice.TransportType.UDP)
+					new_device.send_get_attributes([HiQNetGetAttributes.AttributeID.NameString], HiQNetDevice.TransportType.UDP)
 				
-				_discovered_devices[p_message.source_device] = device
-				device_discovered.emit(device)
+				_discovered_devices[p_message.source_device] = new_device
+				device_discovered.emit(new_device)
 	
 	var device: HiQNetDevice = get_device_from_number(p_message.source_device)
 	
@@ -248,7 +245,7 @@ func go_offline() -> bool:
 
 
 ## Auto fill the infomation in a HiQNetHeadder for sending to broadcast
-func auto_full_headder_broadcast(p_headder: HiQNetHeader, p_flags: HiQNetHeader.Flags = 0) -> HiQNetHeader:
+func auto_full_headder_broadcast(p_headder: HiQNetHeader, p_flags: HiQNetHeader.Flags = HiQNetHeader.Flags.NONE) -> HiQNetHeader:
 	p_headder.source_device = _device_number
 	p_headder.source_address = [0, 0, 0, 0]
 	p_headder.dest_device = 65535

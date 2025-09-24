@@ -4,9 +4,6 @@ class_name SiImpact extends RefCounted
 ## Class to control the Soundcraft Si Impact digital mixer
 
 
-## Emitted when meters are updated
-signal meters_updated(meters: Dictionary)
-
 ## Emitted when a channel name is changed
 signal channel_name_changed(channel: MixerChannel, type: ChannelType, new_name: String)
 
@@ -227,8 +224,12 @@ func subscribe() -> void:
 	if not device:
 		return
 	
-	device.subscribe_to_all_in([1, 0, 0, 21])
-	device.subscribe_to_all_in([1, 0, 0, 62])
+	device.subscribe_to_all_in(master_sends_address)
+	device.subscribe_to_all_in(master_bus_address)
+	device.subscribe_to_all_in(mix_bus_address)
+	device.subscribe_to_all_in(vca_address)
+	device.subscribe_to_all_in(channel_name_address)
+	
 	device.parameters_changed.connect(_on_get_parameters_recieved)
 	
 	_udp.bind(3333)
@@ -402,7 +403,7 @@ func _decode_meter_packet(packet: PackedByteArray):
 
 
 ## Updates a channels metering
-func _update_channel_metering(chunk: PackedByteArray, gate: bool = true, st: bool = false) -> Dictionary:
+func _update_channel_metering(chunk: PackedByteArray, _gate: bool = true, st: bool = false) -> Dictionary:
 	var result: Dictionary[String, Variant]
 	result["is_st"] = st
 	

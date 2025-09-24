@@ -14,7 +14,7 @@ enum DisplayMode {
 
 
 ## Default DataType
-const DefaultDataType: int = HiQNetHeader.DataType.LONG
+const DefaultDataType: HiQNetHeader.DataType = HiQNetHeader.DataType.LONG
 
 ## Default Parameter Value
 const DefaultDataValue: Variant = 0
@@ -94,7 +94,11 @@ var _editable_items: Dictionary[TreeItem, Dictionary]
 func _ready() -> void:
 	tree.set_column_title(0, "Address")
 	cues_control.cue_selected.connect(_on_cue_selected)
-	pass
+	
+	for data_type: String in HiQNetHeader.DataType:
+		cell_data_type_option.add_item(data_type)
+	
+	cell_data_type_option.select(0)
 
 
 ## Shows a given cue in the table
@@ -168,7 +172,7 @@ func _add_parameter_columns(p_item: TreeItem, p_parameter: Parameter, p_pid: int
 		tree.set_column_title(column, str(p_pid))
 	
 	
-	match _current_display_mode:
+	match p_display_mode:
 		DisplayMode.Raw:
 			p_item.set_text(column, str(p_parameter.value))
 			_set_item_editable(p_item, column, true)
@@ -207,7 +211,10 @@ func _reset_tree() -> void:
 	tree.columns = 1
 	tree.column_titles_visible = false
 	tree.create_item()
+	
 	delete_button.set_disabled(true)
+	cell_data_type_option.set_disabled(true)
+	cell_data_type_option.select(0)
 	
 	address_filter_option.clear()
 	address_filter_option.add_item("All", 0)
@@ -222,6 +229,20 @@ func _reset_tree() -> void:
 func _disable_edit_buttons(p_disable: bool) -> void:
 	for button: Button in disable_when_no_active_cue:
 		button.disabled = p_disable
+
+
+## Returns the Parameter object for the currently selected tree cell, or null if none
+func _get_selected_parameter() -> Parameter:
+	var item: TreeItem = tree.get_selected()
+	var column: int = tree.get_selected_column()
+	
+	if not item or column == 0:
+		return null
+	
+	var address: Array = _address_items.right(item)
+	var pid: int = _pid_columns.right(column)
+	
+	return _current_cue.data.get(address, {}).get(pid, null)
 
 
 ## Called when a cue is selected
@@ -257,7 +278,7 @@ func _on_address_filter_item_selected(p_index: int) -> void:
 
 ## Called when the display mode option is changed
 func _on_display_mode_item_selected(p_index: int) -> void:
-	_current_display_mode = p_index
+	_current_display_mode = p_index as DisplayMode
 	_reload_tree()
 
 
@@ -275,6 +296,7 @@ func _on_tree_item_edited() -> void:
 		DisplayMode.Decibel:
 			value = SiImpact.fader_to_db(int(tree.get_edited().get_text(tree.get_edited_column())))
 	
+	tree.get_edited().set_editable(tree.get_edited_column(), false)
 	(_current_cue.data[address][pid] as Parameter).value = value
 
 
@@ -285,25 +307,33 @@ func _on_tree_gui_input(event: InputEvent) -> void:
 		var column: int = tree.get_column_at_position(event.position)
 		
 		if _is_item_editable(item, column):
+			var address: Array = _address_items.right(item)
+			var pid: int = _pid_columns.right(column)
 			tree.deselect_all()
 			item.select(column)
+			
 			await get_tree().process_frame
 			await get_tree().process_frame
+			
 			match _current_display_mode:
 				DisplayMode.Raw:
+					item.set_editable(column, true)
 					tree.edit_selected(true)
 				
 				DisplayMode.CheckBox:
 					item.set_checked(column, not item.is_checked(column))
+					(_current_cue.data[address][pid] as Parameter).value = int(item.is_checked(column))
 				
 				DisplayMode.Decibel:
-					pass
+					item.set_editable(column, true)
 
 
 ## Called when nothing is selected in the tree
 func _on_tree_nothing_selected() -> void:
 	tree.deselect_all()
 	delete_button.set_disabled(true)
+	cell_data_type_option.set_disabled(true)
+	cell_data_type_option.select(0)
 
 
 ## Called when an item is activated in the tree
@@ -324,7 +354,16 @@ func _on_tree_item_activated() -> void:
 ## Called when an item is selected in the tree
 func _on_tree_item_selected() -> void:
 	delete_button.set_disabled(false)
-
+	cell_data_type_option.set_disabled(false)
+	
+	var parameter: Parameter = _get_selected_parameter()
+	
+	if parameter:
+		cell_data_type_option.select(parameter.data_type + 1)
+	
+	else:
+		cell_data_type_option.select(0)
+		cell_data_type_option.set_disabled(true)
 
 ## Called when the AddParameter button is pressed
 func _on_add_parameter_pressed() -> void:
@@ -351,3 +390,10 @@ func _on_delete_pressed() -> void:
 		_current_cue.data.get(address, {}).erase(pid)
 	
 	_reload_tree()
+
+
+## Called when a data type option is selected
+func _on_cell_data_type_item_selected(p_index: int) -> void:
+	var parameter: Parameter = _get_selected_parameter()
+	
+	parameter.data_type = (p_index - 1) as HiQNetHeader.DataType

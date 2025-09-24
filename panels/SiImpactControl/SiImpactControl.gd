@@ -54,18 +54,6 @@ var _mtx_channels: Dictionary[int, Channel] = {}
 ## Stores all st channels
 var _vca_channels: Dictionary[int, Channel] = {}
 
-## Stores all st channels
-var _user1_channels: Dictionary[int, Channel] = {}
-
-## Stores all st channels
-var _user2_channels: Dictionary[int, Channel] = {}
-
-## Stores all st channels
-var _user3_channels: Dictionary[int, Channel] = {}
-
-## Stores all st channels
-var _user4_channels: Dictionary[int, Channel] = {}
-
 ## The mixer object
 var _mixer: SiImpact = SiImpact.new()
 
@@ -154,7 +142,7 @@ func _ready() -> void:
 
 
 ## Poll the mixer
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	_mixer.poll()
 
 
@@ -185,29 +173,6 @@ func _load_channels() -> void:
 	
 	_mixer.connect_meter_signal(SiImpact.ChannelType.MasterBus, SiImpact.MasterBus.LR, main_lr.set_metering)
 	_mixer.connect_meter_signal(SiImpact.ChannelType.MasterBus, SiImpact.MasterBus.C, main_c.set_metering)
-
-
-## Updates a channels metering
-func _update_channel_metering(channel: Channel, chunk: PackedByteArray, gate: bool = true, st: bool = false) -> void:
-	channel.set_vu_value(1 - chunk[0] / 108.0, 0)
-	channel.set_rms_value(1- chunk[1] / 108.0, 0)
-	channel.set_vu_ovl(chunk[3] & 0x10, 0)
-	
-	if st:
-		channel.set_vu_value(1 - chunk[4] / 108.0, 1)
-		channel.set_rms_value(1- chunk[5] / 108.0, 1)
-		channel.set_vu_ovl(chunk[7] & 0x10, 1)
-	
-	channel.set_comp_value(chunk[2] / 40.0)
-	
-	if not chunk[3] & 0x8:
-		channel.set_gate_open(chunk[3] & 0x4)
-		channel.set_gate_hold(chunk[3] & 0x2)
-		channel.set_gate_shut(chunk[3] & 0x1)
-	else:
-		channel.set_gate_open(false)
-		channel.set_gate_hold(false)
-		channel.set_gate_shut(false)
 
 
 ## Gets the corrisponding Channel

@@ -35,6 +35,9 @@ func set_device(p_device: HiQNetDevice) -> void:
 		_device_connections.connect_object(_current_device, true)
 		set_status_label(_current_device.get_network_state_human())
 		show()
+		
+		if _current_device.get_network_state() == HiQNetDevice.NetworkState.CONNECTED:
+			_on_network_state_changed.call_deferred(HiQNetDevice.NetworkState.CONNECTED, _current_device)
 
 
 ## Sets the text in the status label
