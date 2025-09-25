@@ -30,6 +30,7 @@ func _phrase_packet(p_packet: PackedByteArray) -> void:
 	
 	if len(p_packet) > 2:
 		decode_error = DecodeError.LENGTH_INVALID
+		printerr("DecodeError.LENGTH_INVALID")
 		return
 	
 	device_number = (p_packet[0] << 8) | p_packet[1]

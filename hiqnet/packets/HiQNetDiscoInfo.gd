@@ -66,6 +66,12 @@ func _get_as_packet() -> PackedByteArray:
 ## Decodes this HiQNetDiscoInfo
 func _phrase_packet(p_packet: PackedByteArray) -> void:
 	p_packet = get_packet_body(p_packet)
+	
+	if len(p_packet) < 46:
+		decode_error = DecodeError.LENGTH_INVALID
+		printerr("DecodeError.LENGTH_INVALID")
+		return
+	
 	cost = p_packet[2]
 	
 	var serial_length: int = (p_packet[3] << 8) | p_packet[4]

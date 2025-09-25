@@ -18,7 +18,7 @@ func _ready() -> void:
 		text = "0.0.0.0"
 	
 	text_changed.connect(_check_text)
-	text_submitted.connect(func (new_text: String): vd_changed.emit(get_vd()))
+	text_submitted.connect(func (_new_text: String): vd_changed.emit(get_vd()))
 	
 	_check_text(text)
 

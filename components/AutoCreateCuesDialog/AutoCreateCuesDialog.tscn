@@ -4,13 +4,13 @@
 [ext_resource type="Script" uid="uid://cgjbvxk3xxos1" path="res://components/VDInput/VDInput.gd" id="2_bgysa"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="2_s1x4y"]
 
-[node name="AutoCreateCuesDialog" type="Window" node_paths=PackedStringArray("_text_edit", "_tree", "_cancel_button", "_create_button", "_load_timer", "_address_input", "_pid_from_input", "_pid_to_input")]
+[node name="AutoCreateCuesDialog" type="Window" node_paths=PackedStringArray("_text_edit", "_tree", "_create_button", "_load_timer", "_address_input", "_pid_from_input", "_pid_to_input")]
+oversampling_override = 1.0
 initial_position = 5
 size = Vector2i(1040, 500)
 script = ExtResource("1_gvfjq")
 _text_edit = NodePath("PanelContainer/VBoxContainer/HSplitContainer/TextEdit")
 _tree = NodePath("PanelContainer/VBoxContainer/HSplitContainer/Tree")
-_cancel_button = NodePath("PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/PanelContainer3/HBoxContainer/CancelButton")
 _create_button = NodePath("PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/PanelContainer3/HBoxContainer/CreateButton")
 _load_timer = NodePath("LoadTimer")
 _address_input = NodePath("PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/LineEdit")
@@ -41,6 +41,7 @@ size_flags_vertical = 3
 [node name="Tree" type="Tree" parent="PanelContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+columns = 2
 column_titles_visible = true
 hide_root = true
 

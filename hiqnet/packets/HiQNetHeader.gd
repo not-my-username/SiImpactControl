@@ -255,6 +255,12 @@ static func phrase_packet(p_packet: PackedByteArray) -> HiQNetHeader:
 		return null
 	
 	message = ClassTypes[p_message_type].new()
+	
+	if len(p_packet) < 24:
+		message.decode_error = DecodeError.LENGTH_INVALID
+		printerr("DecodeError.LENGTH_INVALID")
+		return
+	
 	message.source_device = (p_packet[6] << 8) | p_packet[7]
 	message.source_address = PackedByteArray(p_packet.slice(8, 12))
 	
@@ -268,14 +274,14 @@ static func phrase_packet(p_packet: PackedByteArray) -> HiQNetHeader:
 	var offset: int = 25
 	
 	if (message.flags & Flags.ERROR):
-		var length: int = (p_packet[offset] << 8) | p_packet[offset + 1]
+		var length: int = (p_packet.get(offset) << 8) | p_packet.get(offset + 1)
 		offset += 2 + 2 + length
 	
 	if (message.flags & Flags.MULTIPART):
 		offset += 6
 	
 	if (message.flags & Flags.SESSION_NUMBER):
-		message.session_number = (p_packet[offset] << 8) | p_packet[offset + 1]
+		message.session_number = (p_packet.get(offset) << 8) | p_packet.get(offset + 1)
 	
 	message._phrase_packet(p_packet)
 	return message

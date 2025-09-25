@@ -47,12 +47,13 @@ func _get_as_packet() -> PackedByteArray:
 	return message
 
 
-## Decodes this HiQNetDiscoInfo
+## Decodes this HiQNetParameterSubscribeAll
 func _phrase_packet(p_packet: PackedByteArray) -> void:
 	p_packet = get_packet_body(p_packet)
 	
-	if len(p_packet) > 12:
+	if len(p_packet) < 5:
 		decode_error = DecodeError.LENGTH_INVALID
+		printerr("DecodeError.LENGTH_INVALID")
 		return
 	
 	subscription_type = p_packet[0] as SubscriptionType

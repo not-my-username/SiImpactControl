@@ -275,22 +275,19 @@ func show_auto_create_cues() -> void:
 
 
 ## Auto created cues with given names
-func auto_create_cues(cues: Dictionary[String, Array], address: Array = [], pid_range: Array = []) -> void:
-	for cue_name: String in cues.keys():
-		if not address or not pid_range:
-			_create_cue(-1, cue_name, Color.TRANSPARENT, false, false)
-			return
+func auto_create_cues(p_cues: Dictionary[int, Dictionary], p_address: Array = [], p_pid_range: Array = []) -> void:
+	for cue_number: int in p_cues.keys():
+		var cue_name: String = p_cues[cue_number].name
+		var addressed_data: Dictionary = {}
 		
-		var data: Dictionary[Array, Dictionary] = {
-			address: {
-			}
-		}
-		var addressed_data: Dictionary = data[address]
+		for pid: int in range(p_pid_range[0], p_pid_range[1] + 1):
+			addressed_data[pid] = Parameter.new(pid, HiQNetHeader.DataType.LONG, 1 if pid in p_cues[cue_number].pids else 0)
 		
-		for pid: int in range(pid_range[0], pid_range[1] + 1):
-			addressed_data[pid] = Parameter.new(pid, HiQNetHeader.DataType.LONG, 1 if pid in cues[cue_name] else 0)
-		
-		_create_cue(-1, cue_name, Color.TRANSPARENT, false, false, CueData.new(data))
+		if _cues.has_left(cue_number):
+			var cue_data: CueData = _cues.left(cue_number).data
+			cue_data.data.get_or_add(p_address).merge(addressed_data, true)
+		else:
+			_create_cue(cue_number, cue_name, Color.TRANSPARENT, false, false, CueData.new({ p_address: addressed_data }))
 
 
 ## Returns the CueData for a given cue number

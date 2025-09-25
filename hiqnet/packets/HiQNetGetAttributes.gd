@@ -50,7 +50,9 @@ func _get_as_packet() -> PackedByteArray:
 func _phrase_packet(p_packet: PackedByteArray) -> void:
 	p_packet = get_packet_body(p_packet)
 	
-	if not p_packet:
+	if len(p_packet) < 2:
+		decode_error = DecodeError.LENGTH_INVALID
+		printerr("DecodeError.LENGTH_INVALID")
 		return
 	
 	# Setter
@@ -61,6 +63,11 @@ func _phrase_packet(p_packet: PackedByteArray) -> void:
 	else:
 		var num_attributes: int = (p_packet[0] << 8) | p_packet[1]
 		
+		if len(p_packet) < (num_attributes * 2) + 2:
+			decode_error = DecodeError.LENGTH_INVALID
+			printerr("DecodeError.LENGTH_INVALID")
+			return
+			
 		for index: int in range(2, (num_attributes + 1) * 2, 2):
 			var id: int = (p_packet[index] << 8) | p_packet[index+1]
 			get_attributes[id] = Parameter.new(id)

@@ -32,8 +32,9 @@ func _get_as_packet() -> PackedByteArray:
 func _phrase_packet(p_packet: PackedByteArray) -> void:
 	p_packet = get_packet_body(p_packet)
 	
-	if len(p_packet) > 4:
+	if len(p_packet) < 4:
 		decode_error = DecodeError.LENGTH_INVALID
+		printerr("DecodeError.LENGTH_INVALID")
 		return
 	
 	device_session_number = (p_packet[0] << 8) | p_packet[1]

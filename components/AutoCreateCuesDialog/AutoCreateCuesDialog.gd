@@ -6,7 +6,7 @@ class_name SiAutoCreateCuesDialogComponent extends Window
 
 
 ## Called when the create button is pressed
-signal confirmed(cues: Dictionary[String, Array])
+signal confirmed(cues: Dictionary[int, Dictionary])
 
 
 ## The TextEdit
@@ -14,9 +14,6 @@ signal confirmed(cues: Dictionary[String, Array])
 
 ## The Tree
 @export var _tree: Tree
-
-## The CancelButton
-@export var _cancel_button: Button 
 
 ## The CreateButton
 @export var _create_button: Button
@@ -35,7 +32,7 @@ signal confirmed(cues: Dictionary[String, Array])
 
 
 ## Current cues
-var _cues: Dictionary[String, Array]
+var _cues: Dictionary[int, Dictionary]
 
 ## PID range
 var _pid_range: Array[int] = [0, 0]
@@ -43,60 +40,54 @@ var _pid_range: Array[int] = [0, 0]
 
 ## Sets the cue name column
 func _ready() -> void:
-	_tree.set_column_title(0, "Cue Name")
+	_tree.set_column_title(0, "Index")
+	_tree.set_column_title(1, "Cue Name")
 
 
 ## Loads the inputted data into the tree
 func _load_to_tree() -> void:
 	_cues = _convert_to_cues(_text_edit.text)
+	
 	_tree.clear()
 	_tree.create_item()
 	
-	var pids: Array[int] = []
 	var pid_range: Array = range(_pid_range[0], _pid_range[1] + 1)
+	_tree.columns = len(pid_range) + 2
 	
-	for cue_name: String in _cues.keys():
-		for pid: int in _cues[cue_name]:
-			if pid not in pids:
-				pids.append(pid)
-	
-	_tree.columns = len(pid_range) + 1
-	_tree.set_column_title(0, "Cue Name")
-	
-	pids.sort()
-	
-	for cue_name: String in _cues.keys():
+	for cue_number: int in _cues.keys():
 		var cue_item: TreeItem = _tree.create_item()
-		cue_item.set_text(0, cue_name)
+		cue_item.set_text(0, str(cue_number))
+		cue_item.set_text(1, _cues[cue_number].name)
 		
 		for pid: int in pid_range:
-			var column: int = pid_range.find(pid) + 1
+			var column: int = pid_range.find(pid) + 2
 			
 			cue_item.set_cell_mode(column, TreeItem.CELL_MODE_CHECK)
-			cue_item.set_checked(column, true if pid in _cues[cue_name] else false)
+			cue_item.set_checked(column, true if pid in _cues[cue_number].pids else false)
 			
 			_tree.set_column_title(column, str(pid))
 			_tree.set_column_expand(column, false)
 
 
 ## Converts text from a spreadsheet into cues
-func _convert_to_cues(text: String) -> Dictionary[String, Array]:
+func _convert_to_cues(text: String) -> Dictionary[int, Dictionary]:
 	var lines: PackedStringArray = text.split("\n", false)
-	var cues: Dictionary[String, Array]
+	var cues: Dictionary[int, Dictionary]
 	
 	for line: String in lines:
 		var split: Array = line.split("\t", false)
+		var pids: Array[int] = []
 		
-		if split:
-			cues[split[0]] = []
-		
-		if len(split) == 2:
-			var pids: Array[int] = []
+		if len(split) >= 2:
 			
-			for pid: String in split[1].split(",", false):
+			cues[int(split[0])] = {
+				"name": str(split[1]),
+				"pids": pids
+			}
+		
+		if len(split) >= 3:
+			for pid: String in split[2].split(",", false):
 				pids.append(int(pid))
-			
-			cues[split[0]] = pids
 	
 	return cues
 
