@@ -698,6 +698,7 @@ ok_button_text = "Cancel"
 dialog_text = "Storing Cue... Waiting on mixer to return values"
 
 [node name="AutoCreateCuesDialog" parent="VBoxContainer/HSplitContainer/RightPanel/Cues" instance=ExtResource("18_qwjdt")]
+oversampling_override = 0.0
 visible = false
 
 [node name="ColorPopupMenu" type="PopupMenu" parent="VBoxContainer/HSplitContainer/RightPanel/Cues"]

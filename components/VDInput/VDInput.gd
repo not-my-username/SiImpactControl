@@ -32,6 +32,7 @@ func set_vd(vd: Array) -> void:
 func get_vd() -> Array[int]:
 	return HiQNetDevice.string_to_address(text)
 
+
 ## Checks the text
 func _check_text(new_text: String) -> bool:
 	var result = _regex.search(new_text)

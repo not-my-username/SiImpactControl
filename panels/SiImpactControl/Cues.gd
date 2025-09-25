@@ -285,7 +285,7 @@ func auto_create_cues(p_cues: Dictionary[int, Dictionary], p_address: Array = []
 		
 		if _cues.has_left(cue_number):
 			var cue_data: CueData = _cues.left(cue_number).data
-			cue_data.data.get_or_add(p_address).merge(addressed_data, true)
+			cue_data.data.get_or_add(p_address, {}).merge(addressed_data, true)
 		else:
 			_create_cue(cue_number, cue_name, Color.TRANSPARENT, false, false, CueData.new({ p_address: addressed_data }))
 

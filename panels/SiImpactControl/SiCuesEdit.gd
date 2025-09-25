@@ -286,6 +286,7 @@ func _on_display_mode_item_selected(p_index: int) -> void:
 func _on_tree_item_edited() -> void:
 	var address: Array = _address_items.right(tree.get_edited())
 	var pid: int = _pid_columns.right(tree.get_edited_column())
+	var parameter: Parameter = _current_cue.data[address][pid]
 	var value: Variant
 	
 	match _current_display_mode:
@@ -297,7 +298,14 @@ func _on_tree_item_edited() -> void:
 			value = SiImpact.fader_to_db(int(tree.get_edited().get_text(tree.get_edited_column())))
 	
 	tree.get_edited().set_editable(tree.get_edited_column(), false)
-	(_current_cue.data[address][pid] as Parameter).value = value
+	
+	match parameter.data_type:
+		HiQNetHeader.DataType.STRING:
+			value = str(value)
+		_:
+			value = int(value)
+	
+	parameter.value = value
 
 
 ## Called for all GUI input in the tree
