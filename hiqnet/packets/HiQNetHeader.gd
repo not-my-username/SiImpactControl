@@ -51,7 +51,7 @@ enum DataType {
 
 ## Flags enum (bit positions)
 enum Flags {
-	NONE						= 1,		 ## No Flags
+	NONE						= 0,		 ## No Flags
 	REQUEST_ACK					= (1 << 0),  ## Request acknowledgment
 	ACKNOWLEDGEMENT				= (1 << 1),  ## Acknowledgement flag
 	INFORMATION					= (1 << 2),  ## Information flag
@@ -415,7 +415,7 @@ static func encode_parameters(p_parameters: Dictionary[int, Parameter]) -> Packe
 		
 		match param.data_type:
 			DataType.STRING:
-				var ascii: PackedByteArray = param.value.to_ascii_buffer()
+				var ascii: PackedByteArray = str(param.value).to_ascii_buffer()
 				var length: int = ((len(ascii) * 2) + 2) if ascii else 0
 				packet.append_array(ba(length, 2)) # String Length
 				
@@ -426,16 +426,17 @@ static func encode_parameters(p_parameters: Dictionary[int, Parameter]) -> Packe
 					packet.append_array([0x00, 0x00]) # Append null terminator (2 bytes)
 			
 			DataType.BLOCK:
-				var block_bytes: PackedByteArray = param.value
-				
-				# Write length (2 bytes)
-				packet.append_array(ba(block_bytes.size(), 2))
-				
-				# Write block data
-				packet.append_array(block_bytes)
+				printerr("DataType.BLOCK Not Supported")
+				#var block_bytes: PackedByteArray = param.value
+				#
+				## Write length (2 bytes)
+				#packet.append_array(ba(block_bytes.size(), 2))
+				#
+				## Write block data
+				#packet.append_array(block_bytes)
 			
 			DataType.LONG:
-				var value: int = param.value
+				var value: int = int(param.value)
 				
 				# Write 4-byte signed integer
 				packet.append_array(ba(value, 4))

@@ -170,7 +170,7 @@ static func address_to_string(p_address: Array) -> String:
 
 
 ## Converts a String address to an Array
-static func string_to_address(p_string: String) -> Array:
+static func string_to_address(p_string: String) -> Array[int]:
 	if not len(p_string.split(".")) >= 4:
 		return []
 	
