@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 HQ="*res://hiqnet/HiQClient.gd"
 
+[debug]
+
+gdscript/warnings/int_as_enum_without_cast=0
+
 [display]
 
 window/subwindows/embed_subwindows=false

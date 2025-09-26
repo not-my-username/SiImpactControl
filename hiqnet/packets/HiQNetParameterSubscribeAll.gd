@@ -7,25 +7,25 @@ class_name HiQNetParameterSubscribeAll extends HiQNetHeader
 
 
 ## Enum for  SubscriptionType
-enum SubscriptionType {
-	ALL,
-	NONE_SENSOR,
-	SENSOR
+enum SubscriptionTypeFlags {
+	ALL					= 1,
+	NONE_SENSOR			= 2,
+	SENSOR				= 4,
 }
 
 ## Enum for SubscriptionFlags
 enum SubscriptionFlags {
-	SEND_INIT_UPDATE
+	SEND_INIT_UPDATE	= 1,
 }
 
 ## The SubscriptionType to use
-var subscription_type: SubscriptionType = SubscriptionType.ALL
+var subscription_type: int = SubscriptionTypeFlags.ALL | SubscriptionTypeFlags.SENSOR
 
 ## Sensor update speed ms
 var sensor_rate: int = 0
 
 ## Enum for SubscriptionFlags
-var subscription_flags: SubscriptionFlags = SubscriptionFlags.SEND_INIT_UPDATE
+var subscription_flags: int = SubscriptionFlags.SEND_INIT_UPDATE
 
 
 ## Sets message type on creation
@@ -33,11 +33,11 @@ func _init() -> void:
 	message_type = MessageType.ParameterSubscribeAll
 
 
-## Returns this DiscoInfo object as a network packet
+## Returns this HiQNetParameterSubscribeAll object as a network packet
 func _get_as_packet() -> PackedByteArray:
 	var message: PackedByteArray = PackedByteArray()
 	
-	message.append_array(ba(dest_device, 4))
+	message.append_array(ba(dest_device, 2))
 	message.append_array(dest_address)
 	
 	message.append_array(ba(subscription_type, 1))
@@ -56,6 +56,6 @@ func _phrase_packet(p_packet: PackedByteArray) -> void:
 		printerr("DecodeError.LENGTH_INVALID")
 		return
 	
-	subscription_type = p_packet[0] as SubscriptionType
+	subscription_type = p_packet[0] as SubscriptionTypeFlags
 	sensor_rate = (p_packet[1] << 8) | p_packet[2]
 	subscription_flags = (p_packet[3] << 8) | p_packet[4] as SubscriptionFlags

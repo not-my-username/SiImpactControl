@@ -321,6 +321,7 @@ func use_stream(p_tcp_stream: StreamPeerTCP) -> bool:
 		return false
 	
 	_tcp_peer = p_tcp_stream
+	_tcp_peer.poll()
 	handle_tcp_status_change(_tcp_peer.get_status())
 	
 	_log("Changing TCP stream")
@@ -407,6 +408,10 @@ func handle_message(p_message: HiQNetHeader) -> void:
 			if p_message.is_information():
 				if _network_state == NetworkState.AWAITING_SESSION_RESPONSE:
 					_remote_session_number = p_message.device_session_number
+					
+					for address: Array in _active_subscriptions:
+						subscribe_to_all_in(address)
+					
 					_set_network_state(NetworkState.CONNECTED)
 			
 			elif p_message.is_guaranteed():
@@ -416,10 +421,12 @@ func handle_message(p_message: HiQNetHeader) -> void:
 				_log("Is responding to a session request, with SID: ", _local_session_number)
 				
 				send_hello_res(_local_session_number, _remote_session_number)
+				
+				for address: Array in _active_subscriptions:
+						subscribe_to_all_in(address)
+				
 				_set_network_state(NetworkState.CONNECTED)
 			
-			for address: Array in _active_subscriptions:
-				subscribe_to_all_in(address)
 		
 		MessageType.GoodBye:
 			p_message = p_message as HiQNetGoodbye
