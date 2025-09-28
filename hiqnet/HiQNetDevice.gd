@@ -399,7 +399,7 @@ func handle_message(p_message: HiQNetHeader) -> void:
 						send_discovery(true, TransportType.TCP)
 				
 				NetworkState.AWAITING_SESSION_CONFIRMATION:
-					if p_message.dest_device == HQ.get_device_number() and p_message.is_guaranteed():
+					if p_message.dest_device == HQ.get_device_number():
 						_set_network_state(NetworkState.CONNECTED)
 						send_discovery(true, TransportType.TCP)
 		
@@ -414,7 +414,7 @@ func handle_message(p_message: HiQNetHeader) -> void:
 					
 					_set_network_state(NetworkState.CONNECTED)
 			
-			elif p_message.is_guaranteed():
+			else:
 				_log("Has asked to start a session, SID=", p_message.device_session_number)
 				_remote_session_number = p_message.device_session_number
 				_local_session_number = randi_range(1, 65535)
@@ -426,7 +426,6 @@ func handle_message(p_message: HiQNetHeader) -> void:
 						subscribe_to_all_in(address)
 				
 				_set_network_state(NetworkState.CONNECTED)
-			
 		
 		MessageType.GoodBye:
 			p_message = p_message as HiQNetGoodbye
@@ -452,11 +451,11 @@ func handle_message(p_message: HiQNetHeader) -> void:
 		MessageType.MultiParamSet:
 			p_message = p_message as HiQNetMultiParamSet
 			
-			var cache: Dictionary = _remote_parameter_cache.get_or_add(p_message.dest_address, {})
+			var cache: Dictionary = _remote_parameter_cache.get_or_add(p_message.source_address, {})
 			for parameter: Parameter in p_message.set_parameters.values():
 				cache[parameter.id] = parameter
 			
-			parameters_changed.emit(p_message.dest_address, p_message.set_parameters.values())
+			parameters_changed.emit(p_message.source_address, p_message.set_parameters.values())
 
 
 ## Auto fill the infomation in a HiQNetHeadder for sending to the remote device

@@ -169,6 +169,7 @@ func set_qlab_control(enable_control: bool) -> void:
 func _qlab_listen() -> void:
 	_osc_client.send_message("/listen/go", [])
 	_osc_client.send_message("/listen/playhead", [])
+	_osc_client.send_message("/listen/cue/start", [])
 
 
 ## Gets the Qlab control state
@@ -430,7 +431,7 @@ func _select_cue(cue_number: int) -> void:
 
 ## Updates a cue by getting new data from the mixer
 func _update_cue(cue_number: int) -> void:
-	_cues.left(cue_number).data.clear()
+	#_cues.left(cue_number).data.clear()
 	_seek_to_cue(cue_number, false)
 	_set_store_mode(true)
 	_get_parameters_from_device()
@@ -678,6 +679,7 @@ func _on_store_mode_dialog_confirmed() -> void:
 
 ## Called when a message is recieved from QLab
 func _on_osc_server_message_received(address: Variant, value: Variant, time: Variant) -> void:
+	print(address)
 	match address:
 		"/qlab/event/workspace/go":
 			if not value:
@@ -687,18 +689,19 @@ func _on_osc_server_message_received(address: Variant, value: Variant, time: Var
 			if _qlab_cue_number_regex.search(cue_number_s) and int(cue_number_s) in _sorted_cue_numbers:
 				_seek_to_cue(int(cue_number_s))
 			
-			else:
-				match value[1]:
-					"SINextCue":
-						_selection_down()
-					"SIPreviousCue":
-						_selection_up()
-					"SIGoSelectedCue":
-						_on_go_pressed()
-					"SIStoreNewCue":
-						_create_cue()
-					"SIUpdateSelectedCue":
-						_on_update_pressed()
+		"/qlab/event/workspace/cue/start":
+			match value[1]:
+				"SINextCue":
+					_selection_down()
+				"SIPreviousCue":
+					_selection_up()
+				"SIGoSelectedCue":
+					_on_go_pressed()
+				"SIStoreNewCue":
+					_create_cue()
+				"SIUpdateSelectedCue":
+					_on_update_pressed()
+				
 			
 		"/qlab/event/workspace/playhead":
 			if not value:

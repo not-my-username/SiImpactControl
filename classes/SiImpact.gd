@@ -434,15 +434,15 @@ func _update_channel_metering(chunk: PackedByteArray, _gate: bool = true, st: bo
 func _on_get_parameters_recieved(address: Array, parameters: Array) -> void:
 	match address:
 		channel_name_address:
-			for pid: int in parameters:
-				channel_name_changed.emit(pid, ChannelType.MixerChannel, parameters[pid][1])
+			for parameter: Parameter in parameters:
+				channel_name_changed.emit(parameter.id, ChannelType.MixerChannel, parameter.value)
 	
 		master_sends_address:
 			for parameter: Parameter in parameters:
 				if parameter.id <= mixer_channel_fader_start_pid:
 					channel_muted.emit(parameter.id, ChannelType.MixerChannel, bool(parameter.value))
 				else:
-					channel_fader_moved.emit(parameter.id - mixer_channel_fader_start_pid, ChannelType.MixerChannel, parameter.value)
+					channel_fader_moved.emit(min(parameter.id - mixer_channel_fader_start_pid, mixer_channel_fader_start_pid), ChannelType.MixerChannel, parameter.value)
 		
 		mix_bus_address:
 			for parameter: Parameter in parameters:
@@ -453,23 +453,23 @@ func _on_get_parameters_recieved(address: Array, parameters: Array) -> void:
 						channel_muted.emit(parameter.id, ChannelType.MixBus, bool(parameter.value))
 				else:
 					if parameter.id - mix_bus_fader_start_pid > MixBus.MIX_14:
-						channel_fader_moved.emit(parameter.id - mix_bus_fader_start_pid - MixBus.MIX_14, ChannelType.MatrixBus, parameter.value)
+						channel_fader_moved.emit(min(parameter.id - mix_bus_fader_start_pid - MixBus.MIX_14, mix_bus_fader_start_pid - MixBus.MIX_14), ChannelType.MatrixBus, parameter.value)
 					else:
-						channel_fader_moved.emit(parameter.id - mix_bus_fader_start_pid, ChannelType.MixBus, parameter.value)
+						channel_fader_moved.emit(min(parameter.id - mix_bus_fader_start_pid, mix_bus_fader_start_pid), ChannelType.MixBus, parameter.value)
 		
 		vca_address:
 			for parameter: Parameter in parameters:
 				if parameter.id <= vca_fader_start_pid:
 					channel_muted.emit(parameter.id, ChannelType.VCA, bool(parameter.value))
 				else:
-					channel_fader_moved.emit(parameter.id - vca_fader_start_pid, ChannelType.VCA, parameter.value)
+					channel_fader_moved.emit(min(parameter.id - vca_fader_start_pid, vca_fader_start_pid), ChannelType.VCA, parameter.value)
 		
 		master_bus_address:
 			for parameter: Parameter in parameters:
 				if parameter.id <= master_bus_fader_start_pid:
 					channel_muted.emit(parameter.id, ChannelType.MasterBus, bool(parameter.value))
 				else:
-					channel_fader_moved.emit(parameter.id - master_bus_fader_start_pid, ChannelType.MasterBus, parameter.value)
+					channel_fader_moved.emit(min(parameter.id - master_bus_fader_start_pid, master_bus_fader_start_pid), ChannelType.MasterBus, parameter.value)
 
 
 ## Gets the signal for a channels meter

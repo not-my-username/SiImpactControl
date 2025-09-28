@@ -240,6 +240,10 @@ func go_offline() -> bool:
 	_udp_broadcast.close()
 	_tcp_server.stop()
 	
+	for device: HiQNetDevice in _discovered_devices.values():
+		device.end_session()
+		device.disconnect_tcp()
+	
 	_set_network_state(NetworkState.OFFLINE)
 	return true
 
